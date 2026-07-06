@@ -1,0 +1,11 @@
+model: /nfs/roberts/scratch/pi_mg269/da839/da839_home_offload/NTK_TTT/Models/Llama-3.1-8B-Instruct
+data: /nfs/roberts/scratch/pi_mg269/da839/da839_home_offload/NTK_TTT/archive/combined/niah_free/long_niah_free_train.jsonl
+out: oracle_dumps/local_llama8b_niah
+max_position: 32768
+max_prompt_tokens: 4096
+lora_top_layers: 16
+lora_rank: 8
+lora_alpha: 16.0
+steps: 200
+lr: 0.001
+

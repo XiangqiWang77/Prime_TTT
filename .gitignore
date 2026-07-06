@@ -1,0 +1,42 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+*.egg-info/
+
+# Large or generated experiment artifacts.
+logs/
+runs/
+checkpoints/
+release/*.pt
+release/*.safetensors
+release/*.bin
+figs/
+plots/*.pdf
+plots/*.png
+experiments/*_out/
+oracle_dumps/
+predictions/
+wandb/
+
+# Legacy local experiment material kept on disk but not shipped in the clean repo.
+/*.py
+/aggregate/
+/archive/
+/_obsolete/
+/experiments/
+/plots/
+/qual/
+/rescore/
+/reviewer_answers/
+/tex/
+/slurm/*
+!/slurm/submit_primettt_package_smoke.slurm
+
+# Local machine state.
+.DS_Store
+.claude/
+node_modules/

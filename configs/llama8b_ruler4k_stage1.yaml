@@ -1,0 +1,11 @@
+model: meta-llama/Meta-Llama-3.1-8B-Instruct
+data: data/splits/ruler4k_train.jsonl
+out: oracle_dumps/llama8b_ruler4k
+max_position: 32768
+max_prompt_tokens: 4096
+lora_top_layers: 16
+lora_rank: 8
+lora_alpha: 16.0
+steps: 200
+lr: 0.001
+

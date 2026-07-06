@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "primettt"
+version = "0.1.0"
+description = "PrimeTTT: hypernetwork-warm-started test-time training for long-context LMs"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "torch>=2.2",
+  "transformers>=4.44",
+  "accelerate>=0.30",
+  "pyyaml>=6.0",
+  "numpy>=1.24",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.5"]
+
+[project.scripts]
+primettt-stage1 = "primettt.stage1_oracles:main"
+primettt-stage2 = "primettt.stage2_warmup:main"
+primettt-stage3 = "primettt.stage3_maml:main"
+primettt-infer = "primettt.inference:main"
+primettt-eval = "eval.run_eval:main"
+
+[tool.setuptools.packages.find]
+include = ["primettt*", "data*", "eval*", "baselines*", "transfer*", "analysis*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
