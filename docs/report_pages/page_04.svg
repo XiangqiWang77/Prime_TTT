@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1754" viewBox="0 0 1240 1754">
+<rect width="100%" height="100%" fill="#fbfaf7"/>
+<style>text{font-family:Droid Sans Fallback, DejaVu Sans, Arial, sans-serif;fill:#1f2933} .muted{fill:#5e6978} .small{font-size:23px} .body{font-size:28px} .h1{font-size:54px;font-weight:700} .h2{font-size:38px;font-weight:700} .h3{font-size:30px;font-weight:700} .mono{font-family:Source Code Pro,DejaVu Sans Mono,monospace}</style>
+<text x="72.0" y="62.0" font-size="23" font-weight="400" fill="#697386" text-anchor="start" class="">Tables and join semantics</text>
+<line x1="72" y1="82" x2="1168" y2="82" stroke="#d7dbe2" stroke-width="2"/>
+<text x="72.0" y="155.0" font-size="43" font-weight="700" fill="#1f2933" text-anchor="start" class="">RelPT 的表和关系：不是 magic，是 SQL materialization</text>
+<rect x="72" y="235" width="250" height="58" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
+<rect x="322" y="235" width="846" height="58" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
+<text x="94.0" y="273.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">prompt</text>
+<text x="352.0" y="273.0" font-size="25" font-weight="400" fill="#1f2933" text-anchor="start" class="">输入 prompt、GSM8K 问题、标签/metadata</text>
+<rect x="72" y="293" width="250" height="58" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
+<rect x="322" y="293" width="846" height="58" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
+<text x="94.0" y="331.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">policy</text>
+<text x="352.0" y="331.0" font-size="25" font-weight="400" fill="#1f2933" text-anchor="start" class="">PPO 更新前后的 policy version；每次 update append 一个版本</text>
+<rect x="72" y="351" width="250" height="58" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
+<rect x="322" y="351" width="846" height="58" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
+<text x="94.0" y="389.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">trajectory</text>
+<text x="352.0" y="389.0" font-size="25" font-weight="400" fill="#1f2933" text-anchor="start" class="">rollout 结果：prompt_id、policy_id、response、response_hash</text>
+<rect x="72" y="409" width="250" height="58" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
+<rect x="322" y="409" width="846" height="58" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
+<text x="94.0" y="447.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">reward</text>
+<text x="352.0" y="447.0" font-size="25" font-weight="400" fill="#1f2933" text-anchor="start" class="">某个 reward_model 对 trajectory 的 reward</text>
+<rect x="72" y="467" width="250" height="58" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
+<rect x="322" y="467" width="846" height="58" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
+<text x="94.0" y="505.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">reward_cache</text>
+<text x="352.0" y="505.0" font-size="25" font-weight="400" fill="#1f2933" text-anchor="start" class="">按 reward_model_id + prompt_id + response_hash 复用确定性 reward</text>
+<rect x="72" y="525" width="250" height="58" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
+<rect x="322" y="525" width="846" height="58" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
+<text x="94.0" y="563.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">logprob</text>
+<text x="352.0" y="563.0" font-size="25" font-weight="400" fill="#1f2933" text-anchor="start" class="">PPO 需要的 old-policy logprob</text>
+<rect x="72" y="583" width="250" height="58" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
+<rect x="322" y="583" width="846" height="58" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
+<text x="94.0" y="621.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">advantage</text>
+<text x="352.0" y="621.0" font-size="25" font-weight="400" fill="#1f2933" text-anchor="start" class="">return / advantage，中间训练量</text>
+<rect x="72" y="641" width="250" height="58" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
+<rect x="322" y="641" width="846" height="58" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
+<text x="94.0" y="679.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">batch</text>
+<text x="352.0" y="679.0" font-size="25" font-weight="400" fill="#1f2933" text-anchor="start" class="">materialized PPO batch membership</text>
+<rect x="72" y="699" width="250" height="58" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
+<rect x="322" y="699" width="846" height="58" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
+<text x="94.0" y="737.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">update_record</text>
+<text x="352.0" y="737.0" font-size="25" font-weight="400" fill="#1f2933" text-anchor="start" class="">PPO 输入 policy、输出 policy、batch、trainer backend lineage</text>
+<rect x="72" y="757" width="250" height="58" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
+<rect x="322" y="757" width="846" height="58" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
+<text x="94.0" y="795.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">metric</text>
+<text x="352.0" y="795.0" font-size="25" font-weight="400" fill="#1f2933" text-anchor="start" class="">训练和系统指标</text>
+<rect x="72" y="930" width="1096" height="445" rx="8" fill="#f8fbff" stroke="#c8d7ea" stroke-width="2"/>
+<text x="106.0" y="990.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">SQL optimizer 是什么？</text>
+<text x="106.0" y="1050.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">当前实现用 Python 标准库 sqlite3。SQLite 负责真实 SQL</text>
+<text x="106.0" y="1092.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">执行、索引/unique constraint 和本地 query planning。RelPT</text>
+<text x="106.0" y="1134.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">自己的 optimizer 不是替代 SQLite，而是在 prepare_ppo_batch 前生成</text>
+<text x="106.0" y="1176.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">worklists：rollout_requests、reward_traj_ids、logprob_</text>
+<text x="106.0" y="1218.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">traj_ids、advantage_traj_ids。然后 SQLite join 把已有 rows</text>
+<text x="106.0" y="1260.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">和缺失 rows 分开。</text>
+<text x="106.0" y="1262.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">为什么这么做：因为 post-training 的昂贵部分通常在表外 executor，例如 LLM</text>
+<text x="106.0" y="1304.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">generation、reward model、logprob engine。SQL</text>
+<text x="106.0" y="1346.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">层的任务是避免重复调用这些 executor。</text>
+<line x1="72" y1="1680" x2="1168" y2="1680" stroke="#d7dbe2" stroke-width="2"/>
+<text x="72.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="start" class="">RelPT report generated from this repository</text>
+<text x="1168.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="end" class="">4</text>
+</svg>

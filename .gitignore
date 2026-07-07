@@ -1,0 +1,7 @@
+.deps/
+__pycache__/
+*.pyc
+runs/
+wandb/
+.agents/
+.codex/

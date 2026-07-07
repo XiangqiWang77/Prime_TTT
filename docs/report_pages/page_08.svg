@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1754" viewBox="0 0 1240 1754">
+<rect width="100%" height="100%" fill="#fbfaf7"/>
+<style>text{font-family:Droid Sans Fallback, DejaVu Sans, Arial, sans-serif;fill:#1f2933} .muted{fill:#5e6978} .small{font-size:23px} .body{font-size:28px} .h1{font-size:54px;font-weight:700} .h2{font-size:38px;font-weight:700} .h3{font-size:30px;font-weight:700} .mono{font-family:Source Code Pro,DejaVu Sans Mono,monospace}</style>
+<text x="72.0" y="62.0" font-size="23" font-weight="400" fill="#697386" text-anchor="start" class="">Conclusion</text>
+<line x1="72" y1="82" x2="1168" y2="82" stroke="#d7dbe2" stroke-width="2"/>
+<text x="72.0" y="155.0" font-size="47" font-weight="700" fill="#1f2933" text-anchor="start" class="">从开始到结束：应该怎样理解 RelPT</text>
+<rect x="72" y="260" width="1096" height="145" rx="8" fill="#ffffff" stroke="#d6dce5" stroke-width="2"/>
+<text x="106.0" y="310.0" font-size="30" font-weight="700" fill="#1f2933" text-anchor="start" class="">PPO on what model?</text>
+<text x="357.0" y="304.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">最新真实 TRL 对照使用 sshleifer/tiny-gpt2，在本地</text>
+<text x="357.0" y="342.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">GSM8K Arrow cache 上跑 200 steps。</text>
+<rect x="72" y="435" width="1096" height="145" rx="8" fill="#ffffff" stroke="#d6dce5" stroke-width="2"/>
+<text x="106.0" y="485.0" font-size="30" font-weight="700" fill="#1f2933" text-anchor="start" class="">加 RelPT 前</text>
+<text x="357.0" y="479.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">每次 batch preparation 都重新</text>
+<text x="357.0" y="517.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">generate/reward/logprob；retry</text>
+<text x="357.0" y="555.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">或重复准备会浪费昂贵 executor 调用。</text>
+<rect x="72" y="610" width="1096" height="145" rx="8" fill="#ffffff" stroke="#d6dce5" stroke-width="2"/>
+<text x="106.0" y="660.0" font-size="30" font-weight="700" fill="#1f2933" text-anchor="start" class="">加 RelPT 后</text>
+<text x="357.0" y="654.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">先查关系表/cache。已有</text>
+<text x="357.0" y="692.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">trajectory/reward/logprob/batch 直接</text>
+<text x="357.0" y="730.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">materialize；缺什么补什么。</text>
+<rect x="72" y="785" width="1096" height="145" rx="8" fill="#ffffff" stroke="#d6dce5" stroke-width="2"/>
+<text x="106.0" y="835.0" font-size="30" font-weight="700" fill="#1f2933" text-anchor="start" class="">SQL optimizer</text>
+<text x="357.0" y="829.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">SQLite 是底层 SQL engine。RelPT 的 delta</text>
+<text x="357.0" y="867.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">planner 负责生成缺失 worklist，SQLite</text>
+<text x="357.0" y="905.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">join/constraint 负责复用和去重。</text>
+<rect x="72" y="960" width="1096" height="145" rx="8" fill="#ffffff" stroke="#d6dce5" stroke-width="2"/>
+<text x="106.0" y="1010.0" font-size="30" font-weight="700" fill="#1f2933" text-anchor="start" class="">为什么这么做</text>
+<text x="357.0" y="1004.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">真实 post-training 的成本通常不在 SQL，而在 LLM</text>
+<text x="357.0" y="1042.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">generation、reward model 和 logprob</text>
+<text x="357.0" y="1080.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">engine。把中间产物表化后，就能避免重复调用这些黑盒 executor。</text>
+<rect x="72" y="1135" width="1096" height="145" rx="8" fill="#ffffff" stroke="#d6dce5" stroke-width="2"/>
+<text x="106.0" y="1185.0" font-size="30" font-weight="700" fill="#1f2933" text-anchor="start" class="">结果怎么读</text>
+<text x="357.0" y="1179.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">最新 TRL 200-step 总时间省</text>
+<text x="357.0" y="1217.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">40.7%，generation/reward rows 各省 50%。质量</text>
+<text x="357.0" y="1255.0" font-size="27" font-weight="400" fill="#394150" text-anchor="start" class="">delta 为 0，说明 PPO 更新路径没变；这次主要是系统效率证据。</text>
+<rect x="72" y="1390" width="1096" height="130" rx="8" fill="#eef7f4" stroke="#a7d1c1" stroke-width="2"/>
+<text x="106.0" y="1445.0" font-size="31" font-weight="400" fill="#1f2933" text-anchor="start" class="">最短结论：RelPT 是 post-training pipeline 的关系型控制层。它不声称</text>
+<text x="106.0" y="1489.0" font-size="31" font-weight="400" fill="#1f2933" text-anchor="start" class="">PPO loss 更好，而是让同一个 PPO trainer 少重复准备数据。</text>
+<line x1="72" y1="1680" x2="1168" y2="1680" stroke="#d7dbe2" stroke-width="2"/>
+<text x="72.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="start" class="">RelPT report generated from this repository</text>
+<text x="1168.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="end" class="">8</text>
+</svg>

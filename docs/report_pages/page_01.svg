@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1754" viewBox="0 0 1240 1754">
+<rect width="100%" height="100%" fill="#fbfaf7"/>
+<style>text{font-family:Droid Sans Fallback, DejaVu Sans, Arial, sans-serif;fill:#1f2933} .muted{fill:#5e6978} .small{font-size:23px} .body{font-size:28px} .h1{font-size:54px;font-weight:700} .h2{font-size:38px;font-weight:700} .h3{font-size:30px;font-weight:700} .mono{font-family:Source Code Pro,DejaVu Sans Mono,monospace}</style>
+<text x="72.0" y="62.0" font-size="23" font-weight="400" fill="#697386" text-anchor="start" class="">What is RelPT?</text>
+<line x1="72" y1="82" x2="1168" y2="82" stroke="#d7dbe2" stroke-width="2"/>
+<text x="72.0" y="170.0" font-size="52" font-weight="700" fill="#1f2933" text-anchor="start" class="">RelPT 是什么，为什么这次实验要做它</text>
+<text x="72.0" y="245.0" font-size="31" font-weight="400" fill="#1f2933" text-anchor="start" class="">RelPT 不是新的 PPO loss，也不是新的大模型。它是 post-</text>
+<text x="72.0" y="289.0" font-size="31" font-weight="400" fill="#1f2933" text-anchor="start" class="">training 前处理阶段的关系型控制层：把 prompt、trajectory、r</text>
+<text x="72.0" y="333.0" font-size="31" font-weight="400" fill="#1f2933" text-anchor="start" class="">eward、logprob、advantage、batch 等中间产物放进</text>
+<text x="72.0" y="377.0" font-size="31" font-weight="400" fill="#1f2933" text-anchor="start" class="">append-only tables，用 SQL/join/cache</text>
+<text x="72.0" y="421.0" font-size="31" font-weight="400" fill="#1f2933" text-anchor="start" class="">判断哪些东西已经算过，哪些东西还缺，然后只调用缺失部分的昂贵 executor。</text>
+<rect x="72" y="493" width="1096" height="330" rx="8" fill="#ffffff" stroke="#d4dae3" stroke-width="2"/>
+<text x="106.0" y="555.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">一句话版本</text>
+<text x="106.0" y="613.0" font-size="32" font-weight="400" fill="#1f2933" text-anchor="start" class="">Baseline 每次重新准备 PPO batch；RelPT</text>
+<text x="106.0" y="659.0" font-size="32" font-weight="400" fill="#1f2933" text-anchor="start" class="">先查表，能复用 rollout/reward/logprob/batch</text>
+<text x="106.0" y="705.0" font-size="32" font-weight="400" fill="#1f2933" text-anchor="start" class="">的就复用，只补缺口。PPO trainer 本身保持不变。</text>
+<text x="72.0" y="893.0" font-size="37" font-weight="700" fill="#1f2933" text-anchor="start" class="">本报告覆盖</text>
+<text x="92.0" y="955.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">1. PPO baseline 从 prompt 到 update 的完整流程</text>
+<text x="92.0" y="1005.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">2. RelPT 加在哪一层，和 PPO/TRL/vLLM/reward model 的边界</text>
+<text x="92.0" y="1055.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">3. RelPT 使用哪些表、哪些 join、什么 SQL optimizer</text>
+<text x="92.0" y="1105.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">4. 当前仓库中两套实现：完整 SQLite 原型 + TRL PPO cache 版本</text>
+<text x="92.0" y="1155.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">5. 最新 200-step tiny-gpt2/GSM8K 结果图，以及结果应该如何解读</text>
+<line x1="72" y1="1680" x2="1168" y2="1680" stroke="#d7dbe2" stroke-width="2"/>
+<text x="72.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="start" class="">RelPT report generated from this repository</text>
+<text x="1168.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="end" class="">1</text>
+</svg>
