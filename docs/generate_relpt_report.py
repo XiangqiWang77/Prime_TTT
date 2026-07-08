@@ -167,43 +167,38 @@ def node(svg: Svg, x: float, y: float, title: str, body: str, fill: str = "#ffff
 
 
 def page_01() -> Path:
-    s = Svg("Prime_TTT / RelPT")
-    s.text(M, 160, "RelPT: reusable PPO preparation", 48, weight="700")
-    s.text(M, 218, "through relational artifact control", 42, weight="700")
-    s.multiline(
-        M,
-        295,
-        "RelPT is the system layer in Prime_TTT that makes post-training artifacts reusable. "
-        "It records prompts, rollouts, rewards, logprobs, advantages, batches, policies, and "
-        "updates as append-only relational rows, then computes only the missing delta before PPO.",
-        31,
-        52,
-        44,
-    )
-    s.rect(M, 555, W - 2 * M, 320, "#ffffff", "#d4dae3")
-    s.text(M + 34, 615, "The short version", 34, weight="700")
+    s = Svg("Optimization target")
+    s.text(M, 155, "Target: minimize executor calls", 48, weight="700")
+    s.text(M, 212, "while still producing the exact PPO batch relation", 32, "#4b5563")
+    s.rect(M, 300, W - 2 * M, 250, "#ffffff", "#d4dae3")
+    s.text(M + 34, 362, "RelPT planning equation", 34, weight="700")
+    s.text(M + 34, 438, "required PPO rows - existing materialized rows = missing executor work", 31, "#1f2933")
+    s.text(M + 34, 494, "The optimizer target is small missing work, not a different PPO objective.", 27, "#4b5563")
+    nodes = [
+        ("Required", "prompt x policy x K", "#f7fbff"),
+        ("Existing", "artifact tables", "#f6fff8"),
+        ("Missing", "worklists", "#fff7ed"),
+        ("Trainer", "same PPO batch", "#f8f5ff"),
+    ]
+    x = M
+    for i, (title, body, fill) in enumerate(nodes):
+        node(s, x, 700, title, body, fill, 238, 130)
+        if i:
+            s.arrow(x - 47, 765, x, 765)
+        x += 285
+    s.rect(M, 1010, W - 2 * M, 345, "#f8fbff", "#c8d7ea")
+    s.text(M + 34, 1072, "Concrete target example", 34, weight="700")
     s.multiline(
         M + 34,
-        675,
-        "Baseline preparation redoes generation, reward scoring, and logprob work. RelPT first "
-        "queries the artifact tables. Existing rows are reused; only absent rows trigger expensive "
-        "executors. PPOTrainer still receives the same batch shape.",
-        30,
-        55,
-        43,
+        1132,
+        "For 96 prompts, suppose the next PPO batch asks for K=6 responses per prompt, "
+        "but the database already has K=4 usable trajectories for the same policy. "
+        "The required relation has 576 trajectory rows. The existing relation has 384. "
+        "The missing relation has 192 rows. Only those 192 rows should call rollout.",
+        29,
+        58,
+        42,
     )
-    s.text(M, 975, "What this report illustrates", 37, weight="700")
-    items = [
-        "Where RelPT sits around rollout, reward, logprob, and PPOTrainer.",
-        "How SQL joins turn retries and partial recomputation into delta work.",
-        "Which tables carry lineage for reproducibility and recovery.",
-        "What the latest same-framework TRL PPO measurement shows.",
-        "Why the result is a systems efficiency signal, not a model-quality claim.",
-    ]
-    y = 1040
-    for item in items:
-        s.text(M + 22, y, "- " + item, 28)
-        y += 55
     s.footer(1)
     p = PAGES / "page_01.svg"
     s.save(p)
@@ -211,37 +206,38 @@ def page_01() -> Path:
 
 
 def page_02() -> Path:
-    s = Svg("Baseline PPO preparation")
-    s.text(M, 160, "Without RelPT: retries repeat work", 45, weight="700")
-    boxes = [
-        (M, 280, "Prompts", "GSM8K batch"),
-        (M + 285, 280, "Policy", "tiny-gpt2"),
-        (M + 570, 280, "Rollout", "generate"),
-        (M + 855, 280, "Reward", "score"),
-        (M + 570, 510, "Logprob", "old policy"),
-        (M + 855, 510, "PPO batch", "tensors"),
-        (M + 855, 740, "PPOTrainer", "same update"),
+    s = Svg("Why PPO is tables")
+    s.text(M, 155, "A PPO batch is already a join of artifacts", 45, weight="700")
+    s.text(M, 210, "One train row is valid only when all required artifacts exist.", 30, "#4b5563")
+    node(s, M, 330, "prompt", "question text", "#f7fbff", 220, 120)
+    node(s, M + 255, 330, "policy", "version p_t", "#f8f5ff", 220, 120)
+    node(s, M + 510, 330, "trajectory", "response y", "#fff7ed", 220, 120)
+    node(s, M + 765, 250, "reward", "score r", "#f6fff8", 220, 120)
+    node(s, M + 765, 410, "logprob", "old log p", "#eef2ff", 220, 120)
+    s.arrow(M + 220, 390, M + 255, 390)
+    s.arrow(M + 475, 390, M + 510, 390)
+    s.arrow(M + 730, 390, M + 765, 310)
+    s.arrow(M + 730, 390, M + 765, 470)
+    node(s, M + 370, 650, "advantage", "from reward/logprob", "#fffaf0", 240, 120)
+    node(s, M + 710, 650, "PPO batch row", "query, response, r, logp, A", "#ffffff", 320, 120)
+    s.arrow(M + 875, 530, M + 830, 650)
+    s.arrow(M + 490, 450, M + 490, 650)
+    s.arrow(M + 610, 710, M + 710, 710)
+    s.rect(M, 920, W - 2 * M, 370, "#ffffff", "#d4dae3")
+    s.text(M + 34, 982, "Relational formulation", 34, weight="700")
+    lines = [
+        "trajectory joins prompt on prompt_id and policy on policy_id",
+        "reward joins trajectory on traj_id plus reward_model_id",
+        "logprob joins trajectory on traj_id plus old_policy_id",
+        "advantage joins reward/logprob for derived training credit",
+        "batch is the materialized set of complete joined rows",
     ]
-    for args in boxes:
-        node(s, *args)
-    s.arrow(M + 238, 339, M + 285, 339)
-    s.arrow(M + 523, 339, M + 570, 339)
-    s.arrow(M + 808, 339, M + 855, 339)
-    s.arrow(M + 689, 398, M + 689, 510)
-    s.arrow(M + 974, 398, M + 974, 510)
-    s.arrow(M + 974, 628, M + 974, 740)
-    s.rect(M, 1025, W - 2 * M, 330, "#fff7ed", "#efc58d")
-    s.text(M + 34, 1088, "Why this wastes work", 34, weight="700")
-    s.multiline(
-        M + 34,
-        1150,
-        "A failed run, retry, cache miss investigation, or change from K=4 to K=6 can ask for "
-        "almost the same batch again. A naive pipeline has no durable artifact map, so it often "
-        "regenerates responses and rescans rewards even when most rows already exist.",
-        30,
-        55,
-        43,
-    )
+    y = 1048
+    for line in lines:
+        s.text(M + 34, y, "- " + line, 27)
+        y += 52
+    s.rect(M, 1370, W - 2 * M, 90, "#f8fbff", "#c8d7ea")
+    s.text(M + 34, 1425, "SQL JOIN is not cosmetic; it is the PPO data contract made explicit.", 27, weight="700")
     s.footer(2)
     p = PAGES / "page_02.svg"
     s.save(p)
@@ -249,33 +245,34 @@ def page_02() -> Path:
 
 
 def page_03() -> Path:
-    s = Svg("RelPT dataflow")
-    s.text(M, 155, "With RelPT: query first, execute only the delta", 45, weight="700")
-    xs = [M, M + 285, M + 570, M + 855]
-    titles = [("prompt", "input rows"), ("trajectory", "responses"), ("reward", "scores"), ("logprob", "PPO refs")]
-    for i, (title, sub) in enumerate(titles):
-        node(s, xs[i], 270, title, sub, "#f7fbff")
-        if i:
-            s.arrow(xs[i - 1] + 238, 329, xs[i], 329, "#5b7799")
-    node(s, M + 285, 500, "reward_cache", "semantic reuse", "#f6fff8")
-    node(s, M + 570, 500, "advantage", "returns", "#f8f5ff")
-    node(s, M + 855, 500, "batch", "materialized", "#fffaf0")
-    s.arrow(M + 404, 500, M + 690, 388, "#5f9b6a")
-    s.arrow(M + 690, 500, M + 690, 388, "#8068b5")
-    s.arrow(M + 974, 500, M + 974, 388, "#9f7f39")
-    s.text(M, 760, "Delta planner worklists", 38, weight="700")
+    s = Svg("Anti-join planning")
+    s.text(M, 155, "Anti-join planning finds missing rows", 45, weight="700")
+    s.text(M, 210, "SQL asks: required rows LEFT JOIN existing rows, then keep NULL matches.", 29, "#4b5563")
+    node(s, M, 330, "required", "prompt x policy x K", "#f7fbff", 260, 130)
+    node(s, M + 385, 330, "existing", "trajectory", "#f6fff8", 260, 130)
+    node(s, M + 770, 330, "missing", "rollout_requests", "#fff7ed", 260, 130)
+    s.arrow(M + 260, 395, M + 385, 395)
+    s.arrow(M + 645, 395, M + 770, 395)
+    s.text(M + 255, 520, "LEFT JOIN ... WHERE existing.id IS NULL", 28, "#4b5563", cls="mono")
+    s.rect(M, 660, W - 2 * M, 510, "#ffffff", "#d4dae3")
+    s.text(M + 34, 722, "Repeated for every artifact layer", 34, weight="700")
     rows = [
-        ("rollout_requests", "prompts with too few usable trajectories for the current policy"),
-        ("reward_traj_ids", "trajectories whose reward is not found in reward or reward_cache"),
-        ("logprob_traj_ids", "trajectories missing old-policy logprob rows"),
-        ("advantage_traj_ids", "rewarded trajectories missing returns and advantages"),
+        ("rollout", "prompt x policy x K", "trajectory", "rollout_requests"),
+        ("reward", "trajectory x reward_model", "reward/cache", "reward_traj_ids"),
+        ("logprob", "trajectory x old_policy", "logprob", "logprob_traj_ids"),
+        ("advantage", "rewarded trajectory", "advantage", "advantage_traj_ids"),
+        ("batch", "complete joined rows", "batch", "materialized batch"),
     ]
-    y = 830
-    for name, desc in rows:
-        s.rect(M, y - 38, 280, 64, "#e8eef7", "#c9d4e5")
-        s.text(M + 140, y + 4, name, 23, weight="700", anchor="middle", cls="mono")
-        s.text(M + 320, y + 2, desc, 27, "#4b5563")
-        y += 112
+    y = 800
+    for stage, need, have, out in rows:
+        s.text(M + 34, y, stage, 25, weight="700", cls="mono")
+        s.text(M + 190, y, need, 24, "#4b5563")
+        s.text(M + 548, y, "-", 26, "#697386")
+        s.text(M + 600, y, have, 24, "#4b5563")
+        s.text(M + 805, y, "-> " + out, 24, "#1f2933")
+        y += 75
+    s.rect(M, 1270, W - 2 * M, 130, "#f8fbff", "#c8d7ea")
+    s.text(M + 34, 1330, "DB role: physical joins, indexes, and materialization. RelPT supplies the artifact graph.", 25)
     s.footer(3)
     p = PAGES / "page_03.svg"
     s.save(p)
@@ -283,41 +280,30 @@ def page_03() -> Path:
 
 
 def page_04() -> Path:
-    s = Svg("Tables and joins")
-    s.text(M, 155, "Tables make lineage, reuse, and recovery explicit", 43, weight="700")
-    rows = [
-        ("prompt", "input text, dataset metadata, compact labels"),
-        ("policy", "policy versions before and after PPO updates"),
-        ("trajectory", "rollout artifacts keyed by prompt and policy"),
-        ("reward", "score for a trajectory under a reward model"),
-        ("reward_cache", "deterministic reuse by reward model, prompt, response hash"),
-        ("logprob", "old-policy logprob rows required by PPO"),
-        ("advantage", "return and advantage rows"),
-        ("batch", "materialized PPO batch membership"),
-        ("update_record", "input policy, output policy, batch, trainer lineage"),
-        ("metric", "runtime, row-count, reward, and system metrics"),
-    ]
-    y = 230
-    for i, (name, desc) in enumerate(rows):
-        fill = "#ffffff" if i % 2 == 0 else "#f3f6fa"
-        s.rect(M, y, 270, 58, fill, "#d6dce5", 2, 1)
-        s.rect(M + 270, y, W - 2 * M - 270, 58, fill, "#d6dce5", 2, 1)
-        s.text(M + 22, y + 38, name, 24, weight="700", cls="mono")
-        s.text(M + 300, y + 38, desc, 24)
-        y += 58
-    s.rect(M, 930, W - 2 * M, 430, "#f8fbff", "#c8d7ea")
-    s.text(M + 34, 990, "Join semantics", 34, weight="700")
-    s.multiline(
-        M + 34,
-        1050,
-        "The important join is not only by trajectory id. reward_cache joins on reward_model_id, "
-        "prompt_id, and response_hash, so deterministic rewards can be reused across policy "
-        "versions when the same prompt-response pair appears again. Other LEFT JOINs identify "
-        "missing rollouts, rewards, logprobs, and advantages.",
-        29,
-        58,
-        42,
-    )
+    s = Svg("Partial rollout example")
+    s.text(M, 155, "Example: partial rollout, K=4 to K=6", 43, weight="700")
+    s.text(M, 210, "The target relation expands; existing rows stay valid.", 30, "#4b5563")
+    s.rect(M, 310, W - 2 * M, 250, "#ffffff", "#d4dae3")
+    s.text(M + 34, 372, "Per prompt", 34, weight="700")
+    node(s, M + 70, 420, "existing", "4 trajectories", "#f6fff8", 260, 100)
+    node(s, M + 420, 420, "target", "6 trajectories", "#f7fbff", 260, 100)
+    node(s, M + 770, 420, "missing", "2 trajectories", "#fff7ed", 260, 100)
+    s.arrow(M + 330, 470, M + 420, 470)
+    s.arrow(M + 680, 470, M + 770, 470)
+    s.rect(M, 700, 500, 330, "#fff7ed", "#efc58d")
+    s.text(M + 34, 765, "Naive pipeline", 34, weight="700")
+    s.text(M + 34, 835, "96 prompts x 6", 31)
+    s.text(M + 34, 900, "= 576 rollout calls", 36, weight="700")
+    s.text(M + 34, 960, "384 reusable rows are ignored", 25, "#697386")
+    s.rect(M + 596, 700, 500, 330, "#f6fff8", "#92c9a2")
+    s.text(M + 630, 765, "RelPT", 34, weight="700")
+    s.text(M + 630, 835, "96 prompts x (6 - 4)", 31)
+    s.text(M + 630, 900, "= 192 rollout calls", 36, weight="700")
+    s.text(M + 630, 960, "only missing rows call rollout", 25, "#697386")
+    s.rect(M, 1190, W - 2 * M, 210, "#f8fbff", "#c8d7ea")
+    s.text(M + 34, 1250, "SQL sketch", 34, weight="700")
+    s.text(M + 34, 1310, "GROUP BY prompt_id, policy_id; existing_k = count(trajectory)", 25, cls="mono")
+    s.text(M + 34, 1360, "rollout_requests = target_k - existing_k where existing_k < target_k", 25, cls="mono")
     s.footer(4)
     p = PAGES / "page_04.svg"
     s.save(p)
@@ -325,35 +311,34 @@ def page_04() -> Path:
 
 
 def page_05() -> Path:
-    s = Svg("Implementation map")
-    s.text(M, 155, "Two implementations, one control-layer idea", 45, weight="700")
-    s.rect(M, 250, W - 2 * M, 420, "#ffffff", "#d4dae3")
-    s.text(M + 34, 310, "Full SQLite RelPT prototype", 34, weight="700")
-    s.multiline(
-        M + 34,
-        370,
-        "`relpt.py` creates the append-only schema and implements `RelPT.plan_ppo_batch` plus "
-        "`RelPT.prepare_ppo_batch`. Rollout, reward, logprob, and PPO training are black-box "
-        "executors, which makes the relational contract testable without GPU LLM frameworks.",
-        29,
-        58,
-        42,
-    )
-    s.rect(M, 760, W - 2 * M, 430, "#ffffff", "#d4dae3")
-    s.text(M + 34, 820, "Same-framework TRL PPO comparison", 34, weight="700")
-    s.multiline(
-        M + 34,
-        880,
-        "`trl_gsm8k_relpt_ppo.py` keeps both arms on the same TRL PPOTrainer path. The RelPT "
-        "arm caches prepared query, response, and reward rows for retry reuse; the baseline "
-        "prepares them again. This isolates preparation efficiency from trainer changes.",
-        29,
-        58,
-        42,
-    )
-    s.rect(M, 1280, W - 2 * M, 160, "#f6fff8", "#92c9a2")
-    s.text(M + 34, 1340, "Boundary", 32, weight="700")
-    s.text(M + 34, 1392, "RelPT changes artifact planning and reuse. It does not change PPO loss.", 29)
+    s = Svg("Table interactions")
+    s.text(M, 155, "Rows unlock downstream joins as tables grow", 44, weight="700")
+    node(s, M, 305, "trajectory", "prompt_id, policy_id, response_hash", "#fff7ed", 300, 130)
+    node(s, M + 420, 215, "reward_cache", "reward_model, prompt, hash", "#f6fff8", 300, 130)
+    node(s, M + 420, 395, "reward", "traj_id, score", "#f6fff8", 300, 130)
+    node(s, M + 830, 305, "logprob", "traj_id, old_policy", "#eef2ff", 300, 130)
+    s.arrow(M + 300, 370, M + 420, 280, "#5f9b6a")
+    s.arrow(M + 300, 370, M + 420, 460, "#5f9b6a")
+    s.arrow(M + 720, 460, M + 830, 370, "#8068b5")
+    node(s, M + 270, 660, "advantage", "reward-derived credit", "#fffaf0", 300, 120)
+    node(s, M + 650, 660, "batch", "complete joined rows", "#f8f5ff", 300, 120)
+    s.arrow(M + 570, 720, M + 650, 720)
+    s.rect(M, 900, W - 2 * M, 420, "#ffffff", "#d4dae3")
+    s.text(M + 34, 960, "Reuse rules are different for each table", 34, weight="700")
+    rows = [
+        ("trajectory", "reused for same prompt, same policy, same rollout slot or response row"),
+        ("reward_cache", "reused across policy versions if prompt + normalized response hash match"),
+        ("logprob", "usually policy-specific; missing old-policy logprob must be computed"),
+        ("advantage", "derived from reward/logprob; recompute only when inputs or baseline change"),
+        ("batch", "materialized complete join; exact retry can reuse with zero executor calls"),
+    ]
+    y = 1032
+    for name, desc in rows:
+        s.text(M + 34, y, name, 25, weight="700", cls="mono")
+        s.text(M + 230, y, desc, 24, "#4b5563")
+        y += 64
+    s.rect(M, 1390, W - 2 * M, 90, "#f8fbff", "#c8d7ea")
+    s.text(M + 34, 1445, "This is why the tables interact: a new upstream row changes which downstream joins are now complete.", 25)
     s.footer(5)
     p = PAGES / "page_05.svg"
     s.save(p)
@@ -361,20 +346,24 @@ def page_05() -> Path:
 
 
 def page_06() -> Path:
-    s = Svg("TRL PPO measurement")
-    s.text(M, 150, "200-step TRL PPO comparison", 45, weight="700")
-    s.text(M, 205, "same trainer path, less repeated preparation", 31, "#4b5563")
-    b, r, sv = TRL["baseline"], TRL["relpt"], TRL["savings"]
-    max_ms = max(float(b["total_ms"]), float(r["total_ms"])) / 1000.0
-    bar(s, M, 310, "total time", float(b["total_ms"]) / 1000.0, float(r["total_ms"]) / 1000.0, "s", max_ms)
-    bar(s, M, 470, "prep time", float(b["prep_ms"]) / 1000.0, float(r["prep_ms"]) / 1000.0, "s", max_ms)
-    bar(s, M, 630, "generate time", float(b["generate_ms"]) / 1000.0, float(r["generate_ms"]) / 1000.0, "s", max_ms)
-    bar(s, M, 830, "generated rows", float(b["generated_rows"]), float(r["generated_rows"]), "", float(b["generated_rows"]))
-    bar(s, M, 990, "reward rows", float(b["reward_rows"]), float(r["reward_rows"]), "", float(b["reward_rows"]))
-    s.rect(M, 1225, W - 2 * M, 195, "#f8fbff", "#c8d7ea")
-    s.text(M + 34, 1285, "Observed savings", 34, weight="700")
-    s.text(M + 34, 1340, f"total {pct(sv['total_ms_saved_pct'])} | prep {pct(sv['prep_ms_saved_pct'])} | generated rows {pct(sv['generated_rows_saved_pct'])}", 29)
-    s.text(M + 34, 1388, f"model sshleifer/tiny-gpt2 | dataset {TRL['config']['dataset_source']} | steps {TRL['config']['steps']}", 25, "#5e6978")
+    s = Svg("Why DB optimization applies")
+    s.text(M, 155, "Why a DB optimizer can help", 48, weight="700")
+    cards = [
+        ("Stable keys", "prompt_id, policy_id, traj_id, reward_model_id, response_hash"),
+        ("Append-only facts", "executor outputs are durable rows, not hidden process state"),
+        ("Completeness query", "PPO input is complete only after the artifact joins succeed"),
+        ("Anti-join worklists", "missing rows are exactly what expensive executors must produce"),
+        ("Cost asymmetry", "rollout/reward/logprob are costly; SQL joins and indexes are cheap"),
+    ]
+    y = 270
+    for title, body in cards:
+        s.rect(M, y, W - 2 * M, 165, "#ffffff", "#d4dae3")
+        s.text(M + 34, y + 60, title, 32, weight="700")
+        s.text(M + 330, y + 60, body, 27, "#394150")
+        y += 198
+    s.rect(M, 1310, W - 2 * M, 135, "#f6fff8", "#92c9a2")
+    s.text(M + 34, 1370, "Important boundary", 32, weight="700")
+    s.text(M + 330, 1370, "RelPT optimizes artifact construction, not PPO loss math.", 27)
     s.footer(6)
     p = PAGES / "page_06.svg"
     s.save(p)
@@ -382,26 +371,28 @@ def page_06() -> Path:
 
 
 def page_07() -> Path:
-    s = Svg("Full SQLite prototype result")
-    s.text(M, 155, "Full RelPT prototype: large reward-cache reuse", 44, weight="700")
+    s = Svg("Measured effects")
+    s.text(M, 150, "Measured effects: less repeated work", 45, weight="700")
+    s.text(M, 205, "Same trainer path; savings come from artifact reuse.", 30, "#4b5563")
+    b, tr, trsv = TRL["baseline"], TRL["relpt"], TRL["savings"]
+    max_ms = max(float(b["total_ms"]), float(tr["total_ms"])) / 1000.0
+    bar(s, M, 290, "TRL total time", float(b["total_ms"]) / 1000.0, float(tr["total_ms"]) / 1000.0, "s", max_ms)
+    bar(s, M, 450, "TRL prep time", float(b["prep_ms"]) / 1000.0, float(tr["prep_ms"]) / 1000.0, "s", max_ms)
+    bar(s, M, 610, "TRL generated rows", float(b["generated_rows"]), float(tr["generated_rows"]), "", float(b["generated_rows"]))
     n, r, sv = LOCAL["naive"], LOCAL["relpt"], LOCAL["savings"]
     max_rows = float(n["reward_rows"])
-    bar(s, M, 310, "rollout rows", float(n["rollout_rows"]), float(r["rollout_rows"]), "", max_rows)
-    bar(s, M, 470, "reward executor rows", float(n["reward_rows"]), float(r["reward_rows"]), "", max_rows)
-    bar(s, M, 630, "logprob rows", float(n["logprob_rows"]), float(r["logprob_rows"]), "", max_rows)
-    bar(s, M, 790, "train rows", float(n["train_rows"]), float(r["train_rows"]), "", max_rows)
-    s.rect(M, 1060, W - 2 * M, 330, "#ffffff", "#d4dae3")
-    s.text(M + 34, 1120, "Mechanism", 34, weight="700")
+    bar(s, M, 810, "SQLite rollout rows", float(n["rollout_rows"]), float(r["rollout_rows"]), "", max_rows)
+    bar(s, M, 970, "SQLite reward calls", float(n["reward_rows"]), float(r["reward_rows"]), "", max_rows)
+    s.rect(M, 1215, W - 2 * M, 220, "#f8fbff", "#c8d7ea")
+    s.text(M + 34, 1275, "Readout", 34, weight="700")
     s.multiline(
         M + 34,
-        1180,
-        f"At 200 steps, RelPT saves {pct(sv['rollout_rows_saved_pct'])} of rollout rows, "
-        f"{pct(sv['reward_rows_saved_pct'])} of reward executor rows, and "
-        f"{pct(sv['logprob_rows_saved_pct'])} of logprob rows. Train rows stay unchanged "
-        "because PPO itself is intentionally the same black-box update.",
-        30,
+        1335,
+        f"TRL saved {pct(trsv['prep_ms_saved_pct'])} prep time and {pct(trsv['generated_rows_saved_pct'])} generated rows. "
+        f"The full SQLite prototype saved {pct(sv['reward_rows_saved_pct'])} reward executor calls because reward_cache reused deterministic scores.",
+        28,
         56,
-        43,
+        40,
     )
     s.footer(7)
     p = PAGES / "page_07.svg"
@@ -411,12 +402,12 @@ def page_07() -> Path:
 
 def page_08() -> Path:
     s = Svg("Interpretation")
-    s.text(M, 155, "How to read the evidence", 47, weight="700")
+    s.text(M, 155, "What the example proves", 47, weight="700")
     cards = [
-        ("Claim supported", "RelPT reduces duplicated PPO preparation work by materializing and reusing artifacts."),
-        ("Claim not made", "The tiny model did not learn GSM8K math in this run; quality deltas are zero in the TRL job."),
-        ("Why it matters", "Real post-training pipelines pay heavily for rollout, reward, and logprob executors."),
-        ("Prime_TTT link", "The same relational planning idea fits the broader Prime_TTT view: optimize artifacts before the gradient sink."),
+        ("Target", "Produce the complete PPO batch relation with minimum additional executor calls."),
+        ("Mechanism", "Represent artifacts as growing tables; use joins and anti-joins to find missing rows."),
+        ("Examples", "Retry becomes zero new work. Partial rollout K=4 to K=6 becomes only the K delta. Deterministic rewards hit reward_cache."),
+        ("Boundary", "RelPT does not claim a better PPO loss. It claims a better systems plan for constructing PPO inputs."),
     ]
     y = 270
     for title, body in cards:
@@ -425,7 +416,7 @@ def page_08() -> Path:
         s.multiline(M + 34, y + 118, body, 29, 58, 42, "#394150")
         y += 250
     s.rect(M, 1320, W - 2 * M, 120, "#f6fff8", "#92c9a2")
-    s.text(M + 34, 1375, "Shortest conclusion: RelPT is a relational reuse layer for post-training systems.", 30, weight="700")
+    s.text(M + 34, 1375, "Shortest conclusion: RelPT optimizes the dataflow before the gradient update.", 30, weight="700")
     s.footer(8)
     p = PAGES / "page_08.svg"
     s.save(p)
@@ -437,63 +428,93 @@ def write_markdown() -> None:
     local_sv = LOCAL["savings"]
     text = f"""# Prime_TTT RelPT Detailed Report
 
-This report explains the RelPT component in Prime_TTT: what it is, how it fits
-around PPO, which relational tables and SQL joins it uses, what the optimizer
-controls, and how to read the latest PPO comparison.
+RelPT is the relational planning layer in Prime_TTT. Its target is simple:
+produce the complete PPO batch relation while minimizing new rollout, reward,
+logprob, and advantage work.
 
-## One-sentence summary
+## The target
 
-RelPT is not a new PPO loss. It is a relational control layer for
-post-training preparation: prompts, trajectories, rewards, logprobs,
-advantages, batches, policies, updates, and metrics are materialized as
-append-only tables, so repeated PPO preparation can reuse existing rows and
-only call expensive rollout, reward, or logprob executors for missing work.
+RelPT does not change PPO loss. It changes how the input artifacts for PPO are
+constructed.
 
-## Figure 1: RelPT control layer
+`required PPO rows - existing materialized rows = missing executor work`
+
+The optimizer should make the missing work small. The trainer should still see
+the same query, response, reward, old-logprob, and advantage batch.
+
+## Why PPO can be tables
+
+A PPO batch row is not a single opaque object. It is a join of artifacts:
+
+| table | example key | why PPO needs it |
+| --- | --- | --- |
+| `prompt` | `prompt_id` | query text and dataset metadata |
+| `policy` | `policy_id` | which model version generated or scored the row |
+| `trajectory` | `traj_id`, `prompt_id`, `policy_id` | generated response tokens/text |
+| `reward` | `traj_id`, `reward_model_id` | score used by PPO |
+| `logprob` | `traj_id`, `old_policy_id` | old-policy probability ratio reference |
+| `advantage` | `traj_id`, `policy_id` | credit used by the PPO objective |
+| `batch` | `batch_id`, `traj_id` | materialized membership consumed by PPOTrainer |
+
+The final training relation is the set of rows where these joins are complete.
+That is why SQL joins are natural here: PPO already requires consistency across
+these artifacts. RelPT makes the consistency check explicit.
 
 ![RelPT pipeline](figures/relpt_pipeline.svg)
 
-## Detailed illustration
+## How missing work is computed
 
-In a normal PPO preparation loop, the system starts from a prompt batch, calls a
-policy model to generate responses, scores each response with a reward function
-or reward model, computes old-policy logprobs, builds advantages, and finally
-hands a tensor batch to PPOTrainer. If the same policy step is retried, if a
-run fails after generation but before training, if `K` rollouts per prompt are
-increased, or if only rewards/logprobs need to be recomputed, a naive pipeline
-often repeats work that has already been done.
+RelPT uses anti-joins: build the required relation, left join existing artifact
+tables, and keep the rows where the existing side is NULL.
 
-RelPT inserts a relational layer before the trainer. The trainer remains a
-black box; rollout, reward, and logprob systems also remain black-box
-executors. RelPT only controls the artifacts that flow between them. Each
-artifact is written into an append-only SQLite table with lineage keys such as
-`prompt_id`, `policy_id`, `trajectory_id`, `reward_model_id`, and `batch_id`.
-Before preparing a PPO batch, RelPT queries those tables to decide which rows
-already exist and which rows are still missing.
+| stage | required relation | existing table | missing output |
+| --- | --- | --- | --- |
+| rollout | `prompt x policy x target_K` | `trajectory` | `rollout_requests` |
+| reward | `trajectory x reward_model` | `reward` / `reward_cache` | `reward_traj_ids` |
+| logprob | `trajectory x old_policy` | `logprob` | `logprob_traj_ids` |
+| advantage | rewarded trajectory rows | `advantage` | `advantage_traj_ids` |
+| batch | complete joined rows | `batch` | materialized PPO batch |
 
-The key idea is delta execution:
+The database optimizer matters because these are physical join/index/materialize
+questions over growing tables. RelPT supplies the logical artifact graph; SQLite
+executes the joins and constraints in this prototype.
 
-1. `prompt LEFT JOIN trajectory` identifies prompts that still need rollout rows for the current policy and requested number of responses.
-2. `trajectory LEFT JOIN reward` identifies generated responses that still need scoring.
-3. `reward_cache` reuses deterministic reward results across policy versions when the same prompt and response hash appear again.
-4. `trajectory LEFT JOIN logprob` identifies responses that still need old policy logprob computation.
-5. Completed trajectory, reward, logprob, and advantage rows are joined into a materialized PPO batch.
-6. PPOTrainer consumes the same batch shape as the baseline path, so RelPT changes preparation and reuse, not the training loss.
+## Concrete example: partial rollout
 
-## Tables and lineage
+Suppose the target batch asks for `K=6` rollouts per prompt over 96 prompts, but
+the database already has `K=4` usable trajectories for the same policy.
 
-| table | role |
-| --- | --- |
-| `prompt` | Input prompt text, dataset metadata, and labels where available. |
-| `policy` | Policy versions before and after PPO updates. |
-| `trajectory` | Generated responses keyed by prompt and policy. |
-| `reward` | Reward rows for specific trajectories and reward models. |
-| `reward_cache` | Deterministic reward reuse keyed by reward model, prompt, and response hash. |
-| `logprob` | Old-policy logprob rows needed by PPO. |
-| `advantage` | Return and advantage rows used for training. |
-| `batch` | Materialized PPO batch membership. |
-| `update_record` | Lineage from input policy, batch, trainer backend, and output policy. |
-| `metric` | Runtime, row-count, reward, and system metrics. |
+| plan | rollout calls |
+| --- | ---: |
+| naive | `96 * 6 = 576` |
+| RelPT | `96 * (6 - 4) = 192` |
+
+The SQL shape is:
+
+`GROUP BY prompt_id, policy_id; existing_k = count(trajectory)`
+
+`rollout_requests = target_k - existing_k where existing_k < target_k`
+
+The same logic applies after rollout. If the new 192 trajectories do not have
+rewards, the reward anti-join emits only those trajectory ids. If an old
+trajectory already has a deterministic reward in `reward_cache`, no reward
+executor call is needed. If logprobs are missing for the relevant old policy,
+only those logprob rows are computed.
+
+## Why this can work
+
+It works when executor outputs can be represented as durable keyed artifacts:
+rollout rows, reward rows, logprob rows, advantages, and batches. Once each
+artifact has stable keys, the question "what should I compute next?" becomes a
+database completeness query rather than ad hoc Python control flow.
+
+This is also why different tables have different reuse rules:
+
+- `trajectory` reuse is tied to prompt, policy, and rollout requirement.
+- `reward_cache` can cross policy versions when prompt plus normalized response hash match.
+- `logprob` is usually policy-specific, so it cannot be blindly reused across policies.
+- `advantage` is derived from reward/logprob/baseline inputs.
+- `batch` is a materialized complete join, so exact retries can reuse it directly.
 
 ## Latest TRL PPO comparison
 
@@ -648,8 +669,8 @@ def main() -> None:
     PAGES.mkdir(parents=True, exist_ok=True)
     pages = [fn() for fn in [page_01, page_02, page_03, page_04, page_05, page_06, page_07, page_08]]
     shutil.copyfile(pages[2], FIGURES / "relpt_pipeline.svg")
-    shutil.copyfile(pages[5], FIGURES / "trl_ppo_result.svg")
-    shutil.copyfile(pages[6], FIGURES / "simulated_relpt_result.svg")
+    shutil.copyfile(pages[6], FIGURES / "trl_ppo_result.svg")
+    shutil.copyfile(pages[4], FIGURES / "simulated_relpt_result.svg")
     write_markdown()
     write_html()
     build_pdf(pages)

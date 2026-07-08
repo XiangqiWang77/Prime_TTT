@@ -1,57 +1,39 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1754" viewBox="0 0 1240 1754">
 <rect width="100%" height="100%" fill="#fbfaf7"/>
 <style>text{font-family:DejaVu Sans, Arial, sans-serif;fill:#1f2933}.muted{fill:#5f6978}.mono{font-family:DejaVu Sans Mono,monospace}</style>
-<text x="72.0" y="62.0" font-size="23" font-weight="400" fill="#697386" text-anchor="start" class="">Tables and joins</text>
+<text x="72.0" y="62.0" font-size="23" font-weight="400" fill="#697386" text-anchor="start" class="">Partial rollout example</text>
 <line x1="72.0" y1="82.0" x2="1168.0" y2="82.0" stroke="#d7dbe2" stroke-width="2"/>
-<text x="72.0" y="155.0" font-size="43" font-weight="700" fill="#1f2933" text-anchor="start" class="">Tables make lineage, reuse, and recovery explicit</text>
-<rect x="72.0" y="230.0" width="270.0" height="58.0" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
-<rect x="342.0" y="230.0" width="826.0" height="58.0" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
-<text x="94.0" y="268.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">prompt</text>
-<text x="372.0" y="268.0" font-size="24" font-weight="400" fill="#1f2933" text-anchor="start" class="">input text, dataset metadata, compact labels</text>
-<rect x="72.0" y="288.0" width="270.0" height="58.0" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
-<rect x="342.0" y="288.0" width="826.0" height="58.0" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
-<text x="94.0" y="326.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">policy</text>
-<text x="372.0" y="326.0" font-size="24" font-weight="400" fill="#1f2933" text-anchor="start" class="">policy versions before and after PPO updates</text>
-<rect x="72.0" y="346.0" width="270.0" height="58.0" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
-<rect x="342.0" y="346.0" width="826.0" height="58.0" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
-<text x="94.0" y="384.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">trajectory</text>
-<text x="372.0" y="384.0" font-size="24" font-weight="400" fill="#1f2933" text-anchor="start" class="">rollout artifacts keyed by prompt and policy</text>
-<rect x="72.0" y="404.0" width="270.0" height="58.0" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
-<rect x="342.0" y="404.0" width="826.0" height="58.0" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
-<text x="94.0" y="442.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">reward</text>
-<text x="372.0" y="442.0" font-size="24" font-weight="400" fill="#1f2933" text-anchor="start" class="">score for a trajectory under a reward model</text>
-<rect x="72.0" y="462.0" width="270.0" height="58.0" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
-<rect x="342.0" y="462.0" width="826.0" height="58.0" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
-<text x="94.0" y="500.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">reward_cache</text>
-<text x="372.0" y="500.0" font-size="24" font-weight="400" fill="#1f2933" text-anchor="start" class="">deterministic reuse by reward model, prompt, response hash</text>
-<rect x="72.0" y="520.0" width="270.0" height="58.0" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
-<rect x="342.0" y="520.0" width="826.0" height="58.0" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
-<text x="94.0" y="558.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">logprob</text>
-<text x="372.0" y="558.0" font-size="24" font-weight="400" fill="#1f2933" text-anchor="start" class="">old-policy logprob rows required by PPO</text>
-<rect x="72.0" y="578.0" width="270.0" height="58.0" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
-<rect x="342.0" y="578.0" width="826.0" height="58.0" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
-<text x="94.0" y="616.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">advantage</text>
-<text x="372.0" y="616.0" font-size="24" font-weight="400" fill="#1f2933" text-anchor="start" class="">return and advantage rows</text>
-<rect x="72.0" y="636.0" width="270.0" height="58.0" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
-<rect x="342.0" y="636.0" width="826.0" height="58.0" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
-<text x="94.0" y="674.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">batch</text>
-<text x="372.0" y="674.0" font-size="24" font-weight="400" fill="#1f2933" text-anchor="start" class="">materialized PPO batch membership</text>
-<rect x="72.0" y="694.0" width="270.0" height="58.0" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
-<rect x="342.0" y="694.0" width="826.0" height="58.0" rx="2" fill="#ffffff" stroke="#d6dce5" stroke-width="1"/>
-<text x="94.0" y="732.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">update_record</text>
-<text x="372.0" y="732.0" font-size="24" font-weight="400" fill="#1f2933" text-anchor="start" class="">input policy, output policy, batch, trainer lineage</text>
-<rect x="72.0" y="752.0" width="270.0" height="58.0" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
-<rect x="342.0" y="752.0" width="826.0" height="58.0" rx="2" fill="#f3f6fa" stroke="#d6dce5" stroke-width="1"/>
-<text x="94.0" y="790.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="start" class="mono">metric</text>
-<text x="372.0" y="790.0" font-size="24" font-weight="400" fill="#1f2933" text-anchor="start" class="">runtime, row-count, reward, and system metrics</text>
-<rect x="72.0" y="930.0" width="1096.0" height="430.0" rx="8" fill="#f8fbff" stroke="#c8d7ea" stroke-width="2"/>
-<text x="106.0" y="990.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">Join semantics</text>
-<text x="106.0" y="1050.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">The important join is not only by trajectory id.</text>
-<text x="106.0" y="1092.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">reward_cache joins on reward_model_id, prompt_id, and</text>
-<text x="106.0" y="1134.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">response_hash, so deterministic rewards can be reused</text>
-<text x="106.0" y="1176.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">across policy versions when the same prompt-response pair</text>
-<text x="106.0" y="1218.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">appears again. Other LEFT JOINs identify missing rollouts,</text>
-<text x="106.0" y="1260.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">rewards, logprobs, and advantages.</text>
+<text x="72.0" y="155.0" font-size="43" font-weight="700" fill="#1f2933" text-anchor="start" class="">Example: partial rollout, K=4 to K=6</text>
+<text x="72.0" y="210.0" font-size="30" font-weight="400" fill="#4b5563" text-anchor="start" class="">The target relation expands; existing rows stay valid.</text>
+<rect x="72.0" y="310.0" width="1096.0" height="250.0" rx="8" fill="#ffffff" stroke="#d4dae3" stroke-width="2"/>
+<text x="106.0" y="372.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">Per prompt</text>
+<rect x="142.0" y="420.0" width="260.0" height="100.0" rx="8" fill="#f6fff8" stroke="#cbd3df" stroke-width="2"/>
+<text x="272.0" y="464.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">existing</text>
+<text x="272.0" y="498.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">4 trajectories</text>
+<rect x="492.0" y="420.0" width="260.0" height="100.0" rx="8" fill="#f7fbff" stroke="#cbd3df" stroke-width="2"/>
+<text x="622.0" y="464.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">target</text>
+<text x="622.0" y="498.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">6 trajectories</text>
+<rect x="842.0" y="420.0" width="260.0" height="100.0" rx="8" fill="#fff7ed" stroke="#cbd3df" stroke-width="2"/>
+<text x="972.0" y="464.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">missing</text>
+<text x="972.0" y="498.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">2 trajectories</text>
+<line x1="402.0" y1="470.0" x2="492.0" y2="470.0" stroke="#596579" stroke-width="3"/>
+<path d="M492.0,470.0 l-16,-9 l0,18 z" fill="#596579"/>
+<line x1="752.0" y1="470.0" x2="842.0" y2="470.0" stroke="#596579" stroke-width="3"/>
+<path d="M842.0,470.0 l-16,-9 l0,18 z" fill="#596579"/>
+<rect x="72.0" y="700.0" width="500.0" height="330.0" rx="8" fill="#fff7ed" stroke="#efc58d" stroke-width="2"/>
+<text x="106.0" y="765.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">Naive pipeline</text>
+<text x="106.0" y="835.0" font-size="31" font-weight="400" fill="#1f2933" text-anchor="start" class="">96 prompts x 6</text>
+<text x="106.0" y="900.0" font-size="36" font-weight="700" fill="#1f2933" text-anchor="start" class="">= 576 rollout calls</text>
+<text x="106.0" y="960.0" font-size="25" font-weight="400" fill="#697386" text-anchor="start" class="">384 reusable rows are ignored</text>
+<rect x="668.0" y="700.0" width="500.0" height="330.0" rx="8" fill="#f6fff8" stroke="#92c9a2" stroke-width="2"/>
+<text x="702.0" y="765.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">RelPT</text>
+<text x="702.0" y="835.0" font-size="31" font-weight="400" fill="#1f2933" text-anchor="start" class="">96 prompts x (6 - 4)</text>
+<text x="702.0" y="900.0" font-size="36" font-weight="700" fill="#1f2933" text-anchor="start" class="">= 192 rollout calls</text>
+<text x="702.0" y="960.0" font-size="25" font-weight="400" fill="#697386" text-anchor="start" class="">only missing rows call rollout</text>
+<rect x="72.0" y="1190.0" width="1096.0" height="210.0" rx="8" fill="#f8fbff" stroke="#c8d7ea" stroke-width="2"/>
+<text x="106.0" y="1250.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">SQL sketch</text>
+<text x="106.0" y="1310.0" font-size="25" font-weight="400" fill="#1f2933" text-anchor="start" class="mono">GROUP BY prompt_id, policy_id; existing_k = count(trajectory)</text>
+<text x="106.0" y="1360.0" font-size="25" font-weight="400" fill="#1f2933" text-anchor="start" class="mono">rollout_requests = target_k - existing_k where existing_k &lt; target_k</text>
 <line x1="72.0" y1="1680.0" x2="1168.0" y2="1680.0" stroke="#d7dbe2" stroke-width="2"/>
 <text x="72.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="start" class="">Prime_TTT RelPT report generated from this repository</text>
 <text x="1168.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="end" class="">4</text>

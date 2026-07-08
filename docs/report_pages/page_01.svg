@@ -1,29 +1,40 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1754" viewBox="0 0 1240 1754">
 <rect width="100%" height="100%" fill="#fbfaf7"/>
 <style>text{font-family:DejaVu Sans, Arial, sans-serif;fill:#1f2933}.muted{fill:#5f6978}.mono{font-family:DejaVu Sans Mono,monospace}</style>
-<text x="72.0" y="62.0" font-size="23" font-weight="400" fill="#697386" text-anchor="start" class="">Prime_TTT / RelPT</text>
+<text x="72.0" y="62.0" font-size="23" font-weight="400" fill="#697386" text-anchor="start" class="">Optimization target</text>
 <line x1="72.0" y1="82.0" x2="1168.0" y2="82.0" stroke="#d7dbe2" stroke-width="2"/>
-<text x="72.0" y="160.0" font-size="48" font-weight="700" fill="#1f2933" text-anchor="start" class="">RelPT: reusable PPO preparation</text>
-<text x="72.0" y="218.0" font-size="42" font-weight="700" fill="#1f2933" text-anchor="start" class="">through relational artifact control</text>
-<text x="72.0" y="295.0" font-size="31" font-weight="400" fill="#1f2933" text-anchor="start" class="">RelPT is the system layer in Prime_TTT that makes</text>
-<text x="72.0" y="339.0" font-size="31" font-weight="400" fill="#1f2933" text-anchor="start" class="">post-training artifacts reusable. It records</text>
-<text x="72.0" y="383.0" font-size="31" font-weight="400" fill="#1f2933" text-anchor="start" class="">prompts, rollouts, rewards, logprobs, advantages,</text>
-<text x="72.0" y="427.0" font-size="31" font-weight="400" fill="#1f2933" text-anchor="start" class="">batches, policies, and updates as append-only</text>
-<text x="72.0" y="471.0" font-size="31" font-weight="400" fill="#1f2933" text-anchor="start" class="">relational rows, then computes only the missing</text>
-<text x="72.0" y="515.0" font-size="31" font-weight="400" fill="#1f2933" text-anchor="start" class="">delta before PPO.</text>
-<rect x="72.0" y="555.0" width="1096.0" height="320.0" rx="8" fill="#ffffff" stroke="#d4dae3" stroke-width="2"/>
-<text x="106.0" y="615.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">The short version</text>
-<text x="106.0" y="675.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">Baseline preparation redoes generation, reward scoring,</text>
-<text x="106.0" y="718.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">and logprob work. RelPT first queries the artifact</text>
-<text x="106.0" y="761.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">tables. Existing rows are reused; only absent rows</text>
-<text x="106.0" y="804.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">trigger expensive executors. PPOTrainer still receives</text>
-<text x="106.0" y="847.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">the same batch shape.</text>
-<text x="72.0" y="975.0" font-size="37" font-weight="700" fill="#1f2933" text-anchor="start" class="">What this report illustrates</text>
-<text x="94.0" y="1040.0" font-size="28" font-weight="400" fill="#1f2933" text-anchor="start" class="">- Where RelPT sits around rollout, reward, logprob, and PPOTrainer.</text>
-<text x="94.0" y="1095.0" font-size="28" font-weight="400" fill="#1f2933" text-anchor="start" class="">- How SQL joins turn retries and partial recomputation into delta work.</text>
-<text x="94.0" y="1150.0" font-size="28" font-weight="400" fill="#1f2933" text-anchor="start" class="">- Which tables carry lineage for reproducibility and recovery.</text>
-<text x="94.0" y="1205.0" font-size="28" font-weight="400" fill="#1f2933" text-anchor="start" class="">- What the latest same-framework TRL PPO measurement shows.</text>
-<text x="94.0" y="1260.0" font-size="28" font-weight="400" fill="#1f2933" text-anchor="start" class="">- Why the result is a systems efficiency signal, not a model-quality claim.</text>
+<text x="72.0" y="155.0" font-size="48" font-weight="700" fill="#1f2933" text-anchor="start" class="">Target: minimize executor calls</text>
+<text x="72.0" y="212.0" font-size="32" font-weight="400" fill="#4b5563" text-anchor="start" class="">while still producing the exact PPO batch relation</text>
+<rect x="72.0" y="300.0" width="1096.0" height="250.0" rx="8" fill="#ffffff" stroke="#d4dae3" stroke-width="2"/>
+<text x="106.0" y="362.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">RelPT planning equation</text>
+<text x="106.0" y="438.0" font-size="31" font-weight="400" fill="#1f2933" text-anchor="start" class="">required PPO rows - existing materialized rows = missing executor work</text>
+<text x="106.0" y="494.0" font-size="27" font-weight="400" fill="#4b5563" text-anchor="start" class="">The optimizer target is small missing work, not a different PPO objective.</text>
+<rect x="72.0" y="700.0" width="238.0" height="130.0" rx="8" fill="#f7fbff" stroke="#cbd3df" stroke-width="2"/>
+<text x="191.0" y="744.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Required</text>
+<text x="191.0" y="778.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">prompt x policy x K</text>
+<rect x="357.0" y="700.0" width="238.0" height="130.0" rx="8" fill="#f6fff8" stroke="#cbd3df" stroke-width="2"/>
+<text x="476.0" y="744.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Existing</text>
+<text x="476.0" y="778.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">artifact tables</text>
+<line x1="310.0" y1="765.0" x2="357.0" y2="765.0" stroke="#596579" stroke-width="3"/>
+<path d="M357.0,765.0 l-16,-9 l0,18 z" fill="#596579"/>
+<rect x="642.0" y="700.0" width="238.0" height="130.0" rx="8" fill="#fff7ed" stroke="#cbd3df" stroke-width="2"/>
+<text x="761.0" y="744.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Missing</text>
+<text x="761.0" y="778.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">worklists</text>
+<line x1="595.0" y1="765.0" x2="642.0" y2="765.0" stroke="#596579" stroke-width="3"/>
+<path d="M642.0,765.0 l-16,-9 l0,18 z" fill="#596579"/>
+<rect x="927.0" y="700.0" width="238.0" height="130.0" rx="8" fill="#f8f5ff" stroke="#cbd3df" stroke-width="2"/>
+<text x="1046.0" y="744.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Trainer</text>
+<text x="1046.0" y="778.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">same PPO batch</text>
+<line x1="880.0" y1="765.0" x2="927.0" y2="765.0" stroke="#596579" stroke-width="3"/>
+<path d="M927.0,765.0 l-16,-9 l0,18 z" fill="#596579"/>
+<rect x="72.0" y="1010.0" width="1096.0" height="345.0" rx="8" fill="#f8fbff" stroke="#c8d7ea" stroke-width="2"/>
+<text x="106.0" y="1072.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">Concrete target example</text>
+<text x="106.0" y="1132.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">For 96 prompts, suppose the next PPO batch asks for K=6</text>
+<text x="106.0" y="1174.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">responses per prompt, but the database already has K=4</text>
+<text x="106.0" y="1216.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">usable trajectories for the same policy. The required</text>
+<text x="106.0" y="1258.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">relation has 576 trajectory rows. The existing relation</text>
+<text x="106.0" y="1300.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">has 384. The missing relation has 192 rows. Only those 192</text>
+<text x="106.0" y="1342.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">rows should call rollout.</text>
 <line x1="72.0" y1="1680.0" x2="1168.0" y2="1680.0" stroke="#d7dbe2" stroke-width="2"/>
 <text x="72.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="start" class="">Prime_TTT RelPT report generated from this repository</text>
 <text x="1168.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="end" class="">1</text>

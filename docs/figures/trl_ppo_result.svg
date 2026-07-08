@@ -1,50 +1,51 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1754" viewBox="0 0 1240 1754">
 <rect width="100%" height="100%" fill="#fbfaf7"/>
 <style>text{font-family:DejaVu Sans, Arial, sans-serif;fill:#1f2933}.muted{fill:#5f6978}.mono{font-family:DejaVu Sans Mono,monospace}</style>
-<text x="72.0" y="62.0" font-size="23" font-weight="400" fill="#697386" text-anchor="start" class="">TRL PPO measurement</text>
+<text x="72.0" y="62.0" font-size="23" font-weight="400" fill="#697386" text-anchor="start" class="">Measured effects</text>
 <line x1="72.0" y1="82.0" x2="1168.0" y2="82.0" stroke="#d7dbe2" stroke-width="2"/>
-<text x="72.0" y="150.0" font-size="45" font-weight="700" fill="#1f2933" text-anchor="start" class="">200-step TRL PPO comparison</text>
-<text x="72.0" y="205.0" font-size="31" font-weight="400" fill="#4b5563" text-anchor="start" class="">same trainer path, less repeated preparation</text>
-<text x="72.0" y="340.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="">total time</text>
-<rect x="327.0" y="310.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="327.0" y="310.0" width="560.0" height="34.0" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
-<text x="909.0" y="337.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 20.6s</text>
-<rect x="327.0" y="360.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="327.0" y="360.0" width="332.1" height="34.0" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
-<text x="909.0" y="387.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 12.2s</text>
-<text x="72.0" y="500.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="">prep time</text>
-<rect x="327.0" y="470.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="327.0" y="470.0" width="407.0" height="34.0" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
-<text x="909.0" y="497.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 15.0s</text>
-<rect x="327.0" y="520.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="327.0" y="520.0" width="206.3" height="34.0" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
-<text x="909.0" y="547.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 7.6s</text>
-<text x="72.0" y="660.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="">generate time</text>
-<rect x="327.0" y="630.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="327.0" y="630.0" width="405.2" height="34.0" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
-<text x="909.0" y="657.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 14.9s</text>
-<rect x="327.0" y="680.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="327.0" y="680.0" width="204.6" height="34.0" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
-<text x="909.0" y="707.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 7.5s</text>
-<text x="72.0" y="860.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="">generated rows</text>
-<rect x="327.0" y="830.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="327.0" y="830.0" width="560.0" height="34.0" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
-<text x="909.0" y="857.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 1600.0</text>
-<rect x="327.0" y="880.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="327.0" y="880.0" width="280.0" height="34.0" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
-<text x="909.0" y="907.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 800.0</text>
-<text x="72.0" y="1020.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="">reward rows</text>
-<rect x="327.0" y="990.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="327.0" y="990.0" width="560.0" height="34.0" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
-<text x="909.0" y="1017.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 1600.0</text>
-<rect x="327.0" y="1040.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="327.0" y="1040.0" width="280.0" height="34.0" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
-<text x="909.0" y="1067.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 800.0</text>
-<rect x="72.0" y="1225.0" width="1096.0" height="195.0" rx="8" fill="#f8fbff" stroke="#c8d7ea" stroke-width="2"/>
-<text x="106.0" y="1285.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">Observed savings</text>
-<text x="106.0" y="1340.0" font-size="29" font-weight="400" fill="#1f2933" text-anchor="start" class="">total 40.7% | prep 49.3% | generated rows 50.0%</text>
-<text x="106.0" y="1388.0" font-size="25" font-weight="400" fill="#5e6978" text-anchor="start" class="">model sshleifer/tiny-gpt2 | dataset pyarrow_arrow_cache | steps 200</text>
+<text x="72.0" y="150.0" font-size="45" font-weight="700" fill="#1f2933" text-anchor="start" class="">Measured effects: less repeated work</text>
+<text x="72.0" y="205.0" font-size="30" font-weight="400" fill="#4b5563" text-anchor="start" class="">Same trainer path; savings come from artifact reuse.</text>
+<text x="72.0" y="320.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="">TRL total time</text>
+<rect x="327.0" y="290.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="290.0" width="560.0" height="34.0" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
+<text x="909.0" y="317.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 20.6s</text>
+<rect x="327.0" y="340.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="340.0" width="332.1" height="34.0" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
+<text x="909.0" y="367.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 12.2s</text>
+<text x="72.0" y="480.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="">TRL prep time</text>
+<rect x="327.0" y="450.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="450.0" width="407.0" height="34.0" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
+<text x="909.0" y="477.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 15.0s</text>
+<rect x="327.0" y="500.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="500.0" width="206.3" height="34.0" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
+<text x="909.0" y="527.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 7.6s</text>
+<text x="72.0" y="640.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="">TRL generated rows</text>
+<rect x="327.0" y="610.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="610.0" width="560.0" height="34.0" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
+<text x="909.0" y="637.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 1600.0</text>
+<rect x="327.0" y="660.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="660.0" width="280.0" height="34.0" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
+<text x="909.0" y="687.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 800.0</text>
+<text x="72.0" y="840.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="">SQLite rollout rows</text>
+<rect x="327.0" y="810.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="810.0" width="560.0" height="34.0" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
+<text x="909.0" y="837.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 153600.0</text>
+<rect x="327.0" y="860.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="860.0" width="280.0" height="34.0" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
+<text x="909.0" y="887.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 76800.0</text>
+<text x="72.0" y="1000.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="">SQLite reward calls</text>
+<rect x="327.0" y="970.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="970.0" width="560.0" height="34.0" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
+<text x="909.0" y="997.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 153600.0</text>
+<rect x="327.0" y="1020.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="1020.0" width="4.0" height="34.0" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
+<text x="909.0" y="1047.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 1089.0</text>
+<rect x="72.0" y="1215.0" width="1096.0" height="220.0" rx="8" fill="#f8fbff" stroke="#c8d7ea" stroke-width="2"/>
+<text x="106.0" y="1275.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">Readout</text>
+<text x="106.0" y="1335.0" font-size="28" font-weight="400" fill="#1f2933" text-anchor="start" class="">TRL saved 49.3% prep time and 50.0% generated rows. The</text>
+<text x="106.0" y="1375.0" font-size="28" font-weight="400" fill="#1f2933" text-anchor="start" class="">full SQLite prototype saved 99.3% reward executor calls</text>
+<text x="106.0" y="1415.0" font-size="28" font-weight="400" fill="#1f2933" text-anchor="start" class="">because reward_cache reused deterministic scores.</text>
 <line x1="72.0" y1="1680.0" x2="1168.0" y2="1680.0" stroke="#d7dbe2" stroke-width="2"/>
 <text x="72.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="start" class="">Prime_TTT RelPT report generated from this repository</text>
-<text x="1168.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="end" class="">6</text>
+<text x="1168.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="end" class="">7</text>
 </svg>

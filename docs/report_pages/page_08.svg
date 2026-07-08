@@ -3,26 +3,26 @@
 <style>text{font-family:DejaVu Sans, Arial, sans-serif;fill:#1f2933}.muted{fill:#5f6978}.mono{font-family:DejaVu Sans Mono,monospace}</style>
 <text x="72.0" y="62.0" font-size="23" font-weight="400" fill="#697386" text-anchor="start" class="">Interpretation</text>
 <line x1="72.0" y1="82.0" x2="1168.0" y2="82.0" stroke="#d7dbe2" stroke-width="2"/>
-<text x="72.0" y="155.0" font-size="47" font-weight="700" fill="#1f2933" text-anchor="start" class="">How to read the evidence</text>
+<text x="72.0" y="155.0" font-size="47" font-weight="700" fill="#1f2933" text-anchor="start" class="">What the example proves</text>
 <rect x="72.0" y="270.0" width="1096.0" height="210.0" rx="8" fill="#ffffff" stroke="#d4dae3" stroke-width="2"/>
-<text x="106.0" y="332.0" font-size="32" font-weight="700" fill="#1f2933" text-anchor="start" class="">Claim supported</text>
-<text x="106.0" y="388.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">RelPT reduces duplicated PPO preparation work by</text>
-<text x="106.0" y="430.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">materializing and reusing artifacts.</text>
+<text x="106.0" y="332.0" font-size="32" font-weight="700" fill="#1f2933" text-anchor="start" class="">Target</text>
+<text x="106.0" y="388.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">Produce the complete PPO batch relation with minimum</text>
+<text x="106.0" y="430.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">additional executor calls.</text>
 <rect x="72.0" y="520.0" width="1096.0" height="210.0" rx="8" fill="#ffffff" stroke="#d4dae3" stroke-width="2"/>
-<text x="106.0" y="582.0" font-size="32" font-weight="700" fill="#1f2933" text-anchor="start" class="">Claim not made</text>
-<text x="106.0" y="638.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">The tiny model did not learn GSM8K math in this run;</text>
-<text x="106.0" y="680.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">quality deltas are zero in the TRL job.</text>
+<text x="106.0" y="582.0" font-size="32" font-weight="700" fill="#1f2933" text-anchor="start" class="">Mechanism</text>
+<text x="106.0" y="638.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">Represent artifacts as growing tables; use joins and anti-</text>
+<text x="106.0" y="680.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">joins to find missing rows.</text>
 <rect x="72.0" y="770.0" width="1096.0" height="210.0" rx="8" fill="#ffffff" stroke="#d4dae3" stroke-width="2"/>
-<text x="106.0" y="832.0" font-size="32" font-weight="700" fill="#1f2933" text-anchor="start" class="">Why it matters</text>
-<text x="106.0" y="888.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">Real post-training pipelines pay heavily for rollout,</text>
-<text x="106.0" y="930.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">reward, and logprob executors.</text>
+<text x="106.0" y="832.0" font-size="32" font-weight="700" fill="#1f2933" text-anchor="start" class="">Examples</text>
+<text x="106.0" y="888.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">Retry becomes zero new work. Partial rollout K=4 to K=6</text>
+<text x="106.0" y="930.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">becomes only the K delta. Deterministic rewards hit</text>
+<text x="106.0" y="972.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">reward_cache.</text>
 <rect x="72.0" y="1020.0" width="1096.0" height="210.0" rx="8" fill="#ffffff" stroke="#d4dae3" stroke-width="2"/>
-<text x="106.0" y="1082.0" font-size="32" font-weight="700" fill="#1f2933" text-anchor="start" class="">Prime_TTT link</text>
-<text x="106.0" y="1138.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">The same relational planning idea fits the broader</text>
-<text x="106.0" y="1180.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">Prime_TTT view: optimize artifacts before the gradient</text>
-<text x="106.0" y="1222.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">sink.</text>
+<text x="106.0" y="1082.0" font-size="32" font-weight="700" fill="#1f2933" text-anchor="start" class="">Boundary</text>
+<text x="106.0" y="1138.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">RelPT does not claim a better PPO loss. It claims a better</text>
+<text x="106.0" y="1180.0" font-size="29" font-weight="400" fill="#394150" text-anchor="start" class="">systems plan for constructing PPO inputs.</text>
 <rect x="72.0" y="1320.0" width="1096.0" height="120.0" rx="8" fill="#f6fff8" stroke="#92c9a2" stroke-width="2"/>
-<text x="106.0" y="1375.0" font-size="30" font-weight="700" fill="#1f2933" text-anchor="start" class="">Shortest conclusion: RelPT is a relational reuse layer for post-training systems.</text>
+<text x="106.0" y="1375.0" font-size="30" font-weight="700" fill="#1f2933" text-anchor="start" class="">Shortest conclusion: RelPT optimizes the dataflow before the gradient update.</text>
 <line x1="72.0" y1="1680.0" x2="1168.0" y2="1680.0" stroke="#d7dbe2" stroke-width="2"/>
 <text x="72.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="start" class="">Prime_TTT RelPT report generated from this repository</text>
 <text x="1168.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="end" class="">8</text>

@@ -1,49 +1,54 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1754" viewBox="0 0 1240 1754">
 <rect width="100%" height="100%" fill="#fbfaf7"/>
 <style>text{font-family:DejaVu Sans, Arial, sans-serif;fill:#1f2933}.muted{fill:#5f6978}.mono{font-family:DejaVu Sans Mono,monospace}</style>
-<text x="72.0" y="62.0" font-size="23" font-weight="400" fill="#697386" text-anchor="start" class="">Baseline PPO preparation</text>
+<text x="72.0" y="62.0" font-size="23" font-weight="400" fill="#697386" text-anchor="start" class="">Why PPO is tables</text>
 <line x1="72.0" y1="82.0" x2="1168.0" y2="82.0" stroke="#d7dbe2" stroke-width="2"/>
-<text x="72.0" y="160.0" font-size="45" font-weight="700" fill="#1f2933" text-anchor="start" class="">Without RelPT: retries repeat work</text>
-<rect x="72.0" y="280.0" width="238.0" height="118.0" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
-<text x="191.0" y="324.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Prompts</text>
-<text x="191.0" y="358.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">GSM8K batch</text>
-<rect x="357.0" y="280.0" width="238.0" height="118.0" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
-<text x="476.0" y="324.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Policy</text>
-<text x="476.0" y="358.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">tiny-gpt2</text>
-<rect x="642.0" y="280.0" width="238.0" height="118.0" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
-<text x="761.0" y="324.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Rollout</text>
-<text x="761.0" y="358.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">generate</text>
-<rect x="927.0" y="280.0" width="238.0" height="118.0" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
-<text x="1046.0" y="324.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Reward</text>
-<text x="1046.0" y="358.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">score</text>
-<rect x="642.0" y="510.0" width="238.0" height="118.0" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
-<text x="761.0" y="554.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Logprob</text>
-<text x="761.0" y="588.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">old policy</text>
-<rect x="927.0" y="510.0" width="238.0" height="118.0" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
-<text x="1046.0" y="554.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">PPO batch</text>
-<text x="1046.0" y="588.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">tensors</text>
-<rect x="927.0" y="740.0" width="238.0" height="118.0" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
-<text x="1046.0" y="784.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">PPOTrainer</text>
-<text x="1046.0" y="818.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">same update</text>
-<line x1="310.0" y1="339.0" x2="357.0" y2="339.0" stroke="#596579" stroke-width="3"/>
-<path d="M357.0,339.0 l-16,-9 l0,18 z" fill="#596579"/>
-<line x1="595.0" y1="339.0" x2="642.0" y2="339.0" stroke="#596579" stroke-width="3"/>
-<path d="M642.0,339.0 l-16,-9 l0,18 z" fill="#596579"/>
-<line x1="880.0" y1="339.0" x2="927.0" y2="339.0" stroke="#596579" stroke-width="3"/>
-<path d="M927.0,339.0 l-16,-9 l0,18 z" fill="#596579"/>
-<line x1="761.0" y1="398.0" x2="761.0" y2="510.0" stroke="#596579" stroke-width="3"/>
-<path d="M761.0,510.0 l-9,-16 l18,0 z" fill="#596579"/>
-<line x1="1046.0" y1="398.0" x2="1046.0" y2="510.0" stroke="#596579" stroke-width="3"/>
-<path d="M1046.0,510.0 l-9,-16 l18,0 z" fill="#596579"/>
-<line x1="1046.0" y1="628.0" x2="1046.0" y2="740.0" stroke="#596579" stroke-width="3"/>
-<path d="M1046.0,740.0 l-9,-16 l18,0 z" fill="#596579"/>
-<rect x="72.0" y="1025.0" width="1096.0" height="330.0" rx="8" fill="#fff7ed" stroke="#efc58d" stroke-width="2"/>
-<text x="106.0" y="1088.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">Why this wastes work</text>
-<text x="106.0" y="1150.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">A failed run, retry, cache miss investigation, or</text>
-<text x="106.0" y="1193.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">change from K=4 to K=6 can ask for almost the same</text>
-<text x="106.0" y="1236.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">batch again. A naive pipeline has no durable artifact</text>
-<text x="106.0" y="1279.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">map, so it often regenerates responses and rescans</text>
-<text x="106.0" y="1322.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">rewards even when most rows already exist.</text>
+<text x="72.0" y="155.0" font-size="45" font-weight="700" fill="#1f2933" text-anchor="start" class="">A PPO batch is already a join of artifacts</text>
+<text x="72.0" y="210.0" font-size="30" font-weight="400" fill="#4b5563" text-anchor="start" class="">One train row is valid only when all required artifacts exist.</text>
+<rect x="72.0" y="330.0" width="220.0" height="120.0" rx="8" fill="#f7fbff" stroke="#cbd3df" stroke-width="2"/>
+<text x="182.0" y="374.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">prompt</text>
+<text x="182.0" y="408.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">question text</text>
+<rect x="327.0" y="330.0" width="220.0" height="120.0" rx="8" fill="#f8f5ff" stroke="#cbd3df" stroke-width="2"/>
+<text x="437.0" y="374.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">policy</text>
+<text x="437.0" y="408.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">version p_t</text>
+<rect x="582.0" y="330.0" width="220.0" height="120.0" rx="8" fill="#fff7ed" stroke="#cbd3df" stroke-width="2"/>
+<text x="692.0" y="374.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">trajectory</text>
+<text x="692.0" y="408.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">response y</text>
+<rect x="837.0" y="250.0" width="220.0" height="120.0" rx="8" fill="#f6fff8" stroke="#cbd3df" stroke-width="2"/>
+<text x="947.0" y="294.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">reward</text>
+<text x="947.0" y="328.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">score r</text>
+<rect x="837.0" y="410.0" width="220.0" height="120.0" rx="8" fill="#eef2ff" stroke="#cbd3df" stroke-width="2"/>
+<text x="947.0" y="454.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">logprob</text>
+<text x="947.0" y="488.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">old log p</text>
+<line x1="292.0" y1="390.0" x2="327.0" y2="390.0" stroke="#596579" stroke-width="3"/>
+<path d="M327.0,390.0 l-16,-9 l0,18 z" fill="#596579"/>
+<line x1="547.0" y1="390.0" x2="582.0" y2="390.0" stroke="#596579" stroke-width="3"/>
+<path d="M582.0,390.0 l-16,-9 l0,18 z" fill="#596579"/>
+<line x1="802.0" y1="390.0" x2="837.0" y2="310.0" stroke="#596579" stroke-width="3"/>
+<path d="M837.0,310.0 l-9,16 l18,0 z" fill="#596579"/>
+<line x1="802.0" y1="390.0" x2="837.0" y2="470.0" stroke="#596579" stroke-width="3"/>
+<path d="M837.0,470.0 l-9,-16 l18,0 z" fill="#596579"/>
+<rect x="442.0" y="650.0" width="240.0" height="120.0" rx="8" fill="#fffaf0" stroke="#cbd3df" stroke-width="2"/>
+<text x="562.0" y="694.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">advantage</text>
+<text x="562.0" y="728.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">from reward/logprob</text>
+<rect x="782.0" y="650.0" width="320.0" height="120.0" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
+<text x="942.0" y="694.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">PPO batch row</text>
+<text x="942.0" y="728.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">query, response, r, logp, A</text>
+<line x1="947.0" y1="530.0" x2="902.0" y2="650.0" stroke="#596579" stroke-width="3"/>
+<path d="M902.0,650.0 l-9,-16 l18,0 z" fill="#596579"/>
+<line x1="562.0" y1="450.0" x2="562.0" y2="650.0" stroke="#596579" stroke-width="3"/>
+<path d="M562.0,650.0 l-9,-16 l18,0 z" fill="#596579"/>
+<line x1="682.0" y1="710.0" x2="782.0" y2="710.0" stroke="#596579" stroke-width="3"/>
+<path d="M782.0,710.0 l-16,-9 l0,18 z" fill="#596579"/>
+<rect x="72.0" y="920.0" width="1096.0" height="370.0" rx="8" fill="#ffffff" stroke="#d4dae3" stroke-width="2"/>
+<text x="106.0" y="982.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">Relational formulation</text>
+<text x="106.0" y="1048.0" font-size="27" font-weight="400" fill="#1f2933" text-anchor="start" class="">- trajectory joins prompt on prompt_id and policy on policy_id</text>
+<text x="106.0" y="1100.0" font-size="27" font-weight="400" fill="#1f2933" text-anchor="start" class="">- reward joins trajectory on traj_id plus reward_model_id</text>
+<text x="106.0" y="1152.0" font-size="27" font-weight="400" fill="#1f2933" text-anchor="start" class="">- logprob joins trajectory on traj_id plus old_policy_id</text>
+<text x="106.0" y="1204.0" font-size="27" font-weight="400" fill="#1f2933" text-anchor="start" class="">- advantage joins reward/logprob for derived training credit</text>
+<text x="106.0" y="1256.0" font-size="27" font-weight="400" fill="#1f2933" text-anchor="start" class="">- batch is the materialized set of complete joined rows</text>
+<rect x="72.0" y="1370.0" width="1096.0" height="90.0" rx="8" fill="#f8fbff" stroke="#c8d7ea" stroke-width="2"/>
+<text x="106.0" y="1425.0" font-size="27" font-weight="700" fill="#1f2933" text-anchor="start" class="">SQL JOIN is not cosmetic; it is the PPO data contract made explicit.</text>
 <line x1="72.0" y1="1680.0" x2="1168.0" y2="1680.0" stroke="#d7dbe2" stroke-width="2"/>
 <text x="72.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="start" class="">Prime_TTT RelPT report generated from this repository</text>
 <text x="1168.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="end" class="">2</text>

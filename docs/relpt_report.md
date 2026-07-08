@@ -1,62 +1,92 @@
 # Prime_TTT RelPT Detailed Report
 
-This report explains the RelPT component in Prime_TTT: what it is, how it fits
-around PPO, which relational tables and SQL joins it uses, what the optimizer
-controls, and how to read the latest PPO comparison.
+RelPT is the relational planning layer in Prime_TTT. Its target is simple:
+produce the complete PPO batch relation while minimizing new rollout, reward,
+logprob, and advantage work.
 
-## One-sentence summary
+## The target
 
-RelPT is not a new PPO loss. It is a relational control layer for
-post-training preparation: prompts, trajectories, rewards, logprobs,
-advantages, batches, policies, updates, and metrics are materialized as
-append-only tables, so repeated PPO preparation can reuse existing rows and
-only call expensive rollout, reward, or logprob executors for missing work.
+RelPT does not change PPO loss. It changes how the input artifacts for PPO are
+constructed.
 
-## Figure 1: RelPT control layer
+`required PPO rows - existing materialized rows = missing executor work`
+
+The optimizer should make the missing work small. The trainer should still see
+the same query, response, reward, old-logprob, and advantage batch.
+
+## Why PPO can be tables
+
+A PPO batch row is not a single opaque object. It is a join of artifacts:
+
+| table | example key | why PPO needs it |
+| --- | --- | --- |
+| `prompt` | `prompt_id` | query text and dataset metadata |
+| `policy` | `policy_id` | which model version generated or scored the row |
+| `trajectory` | `traj_id`, `prompt_id`, `policy_id` | generated response tokens/text |
+| `reward` | `traj_id`, `reward_model_id` | score used by PPO |
+| `logprob` | `traj_id`, `old_policy_id` | old-policy probability ratio reference |
+| `advantage` | `traj_id`, `policy_id` | credit used by the PPO objective |
+| `batch` | `batch_id`, `traj_id` | materialized membership consumed by PPOTrainer |
+
+The final training relation is the set of rows where these joins are complete.
+That is why SQL joins are natural here: PPO already requires consistency across
+these artifacts. RelPT makes the consistency check explicit.
 
 ![RelPT pipeline](figures/relpt_pipeline.svg)
 
-## Detailed illustration
+## How missing work is computed
 
-In a normal PPO preparation loop, the system starts from a prompt batch, calls a
-policy model to generate responses, scores each response with a reward function
-or reward model, computes old-policy logprobs, builds advantages, and finally
-hands a tensor batch to PPOTrainer. If the same policy step is retried, if a
-run fails after generation but before training, if `K` rollouts per prompt are
-increased, or if only rewards/logprobs need to be recomputed, a naive pipeline
-often repeats work that has already been done.
+RelPT uses anti-joins: build the required relation, left join existing artifact
+tables, and keep the rows where the existing side is NULL.
 
-RelPT inserts a relational layer before the trainer. The trainer remains a
-black box; rollout, reward, and logprob systems also remain black-box
-executors. RelPT only controls the artifacts that flow between them. Each
-artifact is written into an append-only SQLite table with lineage keys such as
-`prompt_id`, `policy_id`, `trajectory_id`, `reward_model_id`, and `batch_id`.
-Before preparing a PPO batch, RelPT queries those tables to decide which rows
-already exist and which rows are still missing.
+| stage | required relation | existing table | missing output |
+| --- | --- | --- | --- |
+| rollout | `prompt x policy x target_K` | `trajectory` | `rollout_requests` |
+| reward | `trajectory x reward_model` | `reward` / `reward_cache` | `reward_traj_ids` |
+| logprob | `trajectory x old_policy` | `logprob` | `logprob_traj_ids` |
+| advantage | rewarded trajectory rows | `advantage` | `advantage_traj_ids` |
+| batch | complete joined rows | `batch` | materialized PPO batch |
 
-The key idea is delta execution:
+The database optimizer matters because these are physical join/index/materialize
+questions over growing tables. RelPT supplies the logical artifact graph; SQLite
+executes the joins and constraints in this prototype.
 
-1. `prompt LEFT JOIN trajectory` identifies prompts that still need rollout rows for the current policy and requested number of responses.
-2. `trajectory LEFT JOIN reward` identifies generated responses that still need scoring.
-3. `reward_cache` reuses deterministic reward results across policy versions when the same prompt and response hash appear again.
-4. `trajectory LEFT JOIN logprob` identifies responses that still need old policy logprob computation.
-5. Completed trajectory, reward, logprob, and advantage rows are joined into a materialized PPO batch.
-6. PPOTrainer consumes the same batch shape as the baseline path, so RelPT changes preparation and reuse, not the training loss.
+## Concrete example: partial rollout
 
-## Tables and lineage
+Suppose the target batch asks for `K=6` rollouts per prompt over 96 prompts, but
+the database already has `K=4` usable trajectories for the same policy.
 
-| table | role |
-| --- | --- |
-| `prompt` | Input prompt text, dataset metadata, and labels where available. |
-| `policy` | Policy versions before and after PPO updates. |
-| `trajectory` | Generated responses keyed by prompt and policy. |
-| `reward` | Reward rows for specific trajectories and reward models. |
-| `reward_cache` | Deterministic reward reuse keyed by reward model, prompt, and response hash. |
-| `logprob` | Old-policy logprob rows needed by PPO. |
-| `advantage` | Return and advantage rows used for training. |
-| `batch` | Materialized PPO batch membership. |
-| `update_record` | Lineage from input policy, batch, trainer backend, and output policy. |
-| `metric` | Runtime, row-count, reward, and system metrics. |
+| plan | rollout calls |
+| --- | ---: |
+| naive | `96 * 6 = 576` |
+| RelPT | `96 * (6 - 4) = 192` |
+
+The SQL shape is:
+
+`GROUP BY prompt_id, policy_id; existing_k = count(trajectory)`
+
+`rollout_requests = target_k - existing_k where existing_k < target_k`
+
+The same logic applies after rollout. If the new 192 trajectories do not have
+rewards, the reward anti-join emits only those trajectory ids. If an old
+trajectory already has a deterministic reward in `reward_cache`, no reward
+executor call is needed. If logprobs are missing for the relevant old policy,
+only those logprob rows are computed.
+
+## Why this can work
+
+It works when executor outputs can be represented as durable keyed artifacts:
+rollout rows, reward rows, logprob rows, advantages, and batches. Once each
+artifact has stable keys, the question "what should I compute next?" becomes a
+database completeness query rather than ad hoc Python control flow.
+
+This is also why different tables have different reuse rules:
+
+- `trajectory` reuse is tied to prompt, policy, and rollout requirement.
+- `reward_cache` can cross policy versions when prompt plus normalized response hash match.
+- `logprob` is usually policy-specific, so it cannot be blindly reused across policies.
+- `advantage` is derived from reward/logprob/baseline inputs.
+- `batch` is a materialized complete join, so exact retries can reuse it directly.
 
 ## Latest TRL PPO comparison
 
