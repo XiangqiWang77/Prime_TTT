@@ -1,46 +1,44 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1754" viewBox="0 0 1240 1754">
 <rect width="100%" height="100%" fill="#fbfaf7"/>
-<style>text{font-family:Droid Sans Fallback, DejaVu Sans, Arial, sans-serif;fill:#1f2933} .muted{fill:#5e6978} .small{font-size:23px} .body{font-size:28px} .h1{font-size:54px;font-weight:700} .h2{font-size:38px;font-weight:700} .h3{font-size:30px;font-weight:700} .mono{font-family:Source Code Pro,DejaVu Sans Mono,monospace}</style>
-<text x="72.0" y="62.0" font-size="23" font-weight="400" fill="#697386" text-anchor="start" class="">Full RelPT simulated result</text>
-<line x1="72" y1="82" x2="1168" y2="82" stroke="#d7dbe2" stroke-width="2"/>
-<text x="72.0" y="155.0" font-size="44" font-weight="700" fill="#1f2933" text-anchor="start" class="">完整 RelPT 表结构的 200-step 模拟结果</text>
-<text x="72.0" y="310.0" font-size="26" font-weight="700" fill="#1f2933" text-anchor="start" class="">rollout rows</text>
-<rect x="332" y="280" width="610" height="34" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="332" y="280" width="610.0" height="34" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
-<text x="964.0" y="307.0" font-size="23" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 153600.0</text>
-<rect x="332" y="328" width="610" height="34" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="332" y="328" width="305.0" height="34" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
-<text x="964.0" y="355.0" font-size="23" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 76800.0</text>
-<text x="72.0" y="460.0" font-size="26" font-weight="700" fill="#1f2933" text-anchor="start" class="">reward rows</text>
-<rect x="332" y="430" width="610" height="34" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="332" y="430" width="610.0" height="34" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
-<text x="964.0" y="457.0" font-size="23" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 153600.0</text>
-<rect x="332" y="478" width="610" height="34" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="332" y="478" width="4.3248046875" height="34" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
-<text x="964.0" y="505.0" font-size="23" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 1089.0</text>
-<text x="72.0" y="610.0" font-size="26" font-weight="700" fill="#1f2933" text-anchor="start" class="">logprob rows</text>
-<rect x="332" y="580" width="610" height="34" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="332" y="580" width="610.0" height="34" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
-<text x="964.0" y="607.0" font-size="23" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 153600.0</text>
-<rect x="332" y="628" width="610" height="34" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="332" y="628" width="305.0" height="34" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
-<text x="964.0" y="655.0" font-size="23" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 76800.0</text>
-<text x="72.0" y="760.0" font-size="26" font-weight="700" fill="#1f2933" text-anchor="start" class="">train rows</text>
-<rect x="332" y="730" width="610" height="34" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="332" y="730" width="305.0" height="34" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
-<text x="964.0" y="757.0" font-size="23" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 76800.0</text>
-<rect x="332" y="778" width="610" height="34" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
-<rect x="332" y="778" width="305.0" height="34" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
-<text x="964.0" y="805.0" font-size="23" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 76800.0</text>
-<rect x="72" y="1015" width="1096" height="410" rx="8" fill="#fffdfa" stroke="#dfc89f" stroke-width="2"/>
-<text x="106.0" y="1075.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">这张图的含义</text>
-<text x="106.0" y="1135.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">在完整 SQLite RelPT 原型里，rollout_rows 省</text>
-<text x="106.0" y="1178.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">50.0%，logprob_rows 省 50.0%，reward_rows 省</text>
-<text x="106.0" y="1221.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">99.3%。train_rows 省 0.0%，这是故意的：RelPT 不改 PPO</text>
-<text x="106.0" y="1264.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">更新本身，只优化 PPO 前后的数据准备和复用。</text>
-<text x="106.0" y="1320.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">reward_rows 省得最多，是因为 reward_cache 可以跨 policy</text>
-<text x="106.0" y="1363.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">version 复用 deterministic exact-answer reward。</text>
-<line x1="72" y1="1680" x2="1168" y2="1680" stroke="#d7dbe2" stroke-width="2"/>
-<text x="72.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="start" class="">RelPT report generated from this repository</text>
+<style>text{font-family:DejaVu Sans, Arial, sans-serif;fill:#1f2933}.muted{fill:#5f6978}.mono{font-family:DejaVu Sans Mono,monospace}</style>
+<text x="72.0" y="62.0" font-size="23" font-weight="400" fill="#697386" text-anchor="start" class="">Full SQLite prototype result</text>
+<line x1="72.0" y1="82.0" x2="1168.0" y2="82.0" stroke="#d7dbe2" stroke-width="2"/>
+<text x="72.0" y="155.0" font-size="44" font-weight="700" fill="#1f2933" text-anchor="start" class="">Full RelPT prototype: large reward-cache reuse</text>
+<text x="72.0" y="340.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="">rollout rows</text>
+<rect x="327.0" y="310.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="310.0" width="560.0" height="34.0" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
+<text x="909.0" y="337.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 153600.0</text>
+<rect x="327.0" y="360.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="360.0" width="280.0" height="34.0" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
+<text x="909.0" y="387.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 76800.0</text>
+<text x="72.0" y="500.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="">reward executor rows</text>
+<rect x="327.0" y="470.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="470.0" width="560.0" height="34.0" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
+<text x="909.0" y="497.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 153600.0</text>
+<rect x="327.0" y="520.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="520.0" width="4.0" height="34.0" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
+<text x="909.0" y="547.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 1089.0</text>
+<text x="72.0" y="660.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="">logprob rows</text>
+<rect x="327.0" y="630.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="630.0" width="560.0" height="34.0" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
+<text x="909.0" y="657.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 153600.0</text>
+<rect x="327.0" y="680.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="680.0" width="280.0" height="34.0" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
+<text x="909.0" y="707.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 76800.0</text>
+<text x="72.0" y="820.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="start" class="">train rows</text>
+<rect x="327.0" y="790.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="790.0" width="280.0" height="34.0" rx="4" fill="#d86c59" stroke="#d86c59" stroke-width="0"/>
+<text x="909.0" y="817.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">baseline 76800.0</text>
+<rect x="327.0" y="840.0" width="560.0" height="34.0" rx="4" fill="#edf1f5" stroke="#edf1f5" stroke-width="0"/>
+<rect x="327.0" y="840.0" width="280.0" height="34.0" rx="4" fill="#2f8f83" stroke="#2f8f83" stroke-width="0"/>
+<text x="909.0" y="867.0" font-size="22" font-weight="400" fill="#5e6978" text-anchor="start" class="">RelPT 76800.0</text>
+<rect x="72.0" y="1060.0" width="1096.0" height="330.0" rx="8" fill="#ffffff" stroke="#d4dae3" stroke-width="2"/>
+<text x="106.0" y="1120.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">Mechanism</text>
+<text x="106.0" y="1180.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">At 200 steps, RelPT saves 50.0% of rollout rows, 99.3%</text>
+<text x="106.0" y="1223.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">of reward executor rows, and 50.0% of logprob rows.</text>
+<text x="106.0" y="1266.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">Train rows stay unchanged because PPO itself is</text>
+<text x="106.0" y="1309.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">intentionally the same black-box update.</text>
+<line x1="72.0" y1="1680.0" x2="1168.0" y2="1680.0" stroke="#d7dbe2" stroke-width="2"/>
+<text x="72.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="start" class="">Prime_TTT RelPT report generated from this repository</text>
 <text x="1168.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="end" class="">7</text>
 </svg>

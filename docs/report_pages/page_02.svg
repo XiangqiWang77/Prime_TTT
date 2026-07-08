@@ -1,49 +1,50 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1754" viewBox="0 0 1240 1754">
 <rect width="100%" height="100%" fill="#fbfaf7"/>
-<style>text{font-family:Droid Sans Fallback, DejaVu Sans, Arial, sans-serif;fill:#1f2933} .muted{fill:#5e6978} .small{font-size:23px} .body{font-size:28px} .h1{font-size:54px;font-weight:700} .h2{font-size:38px;font-weight:700} .h3{font-size:30px;font-weight:700} .mono{font-family:Source Code Pro,DejaVu Sans Mono,monospace}</style>
-<text x="72.0" y="62.0" font-size="23" font-weight="400" fill="#697386" text-anchor="start" class="">Baseline PPO dataflow</text>
-<line x1="72" y1="82" x2="1168" y2="82" stroke="#d7dbe2" stroke-width="2"/>
-<text x="72.0" y="160.0" font-size="45" font-weight="700" fill="#1f2933" text-anchor="start" class="">没有 RelPT 时：PPO batch preparation 每次重跑</text>
-<rect x="72" y="285" width="240" height="112" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
-<text x="192.0" y="330.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="middle" class="">GSM8K prompts</text>
-<text x="192.0" y="367.0" font-size="21" font-weight="400" fill="#697386" text-anchor="middle" class="">问题文本 + 标准答案</text>
-<rect x="357" y="285" width="240" height="112" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
-<text x="477.0" y="330.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Policy model</text>
-<text x="477.0" y="367.0" font-size="21" font-weight="400" fill="#697386" text-anchor="middle" class="">sshleifer/tiny-gpt2</text>
-<rect x="642" y="285" width="240" height="112" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
-<text x="762.0" y="330.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Rollout</text>
-<text x="762.0" y="367.0" font-size="21" font-weight="400" fill="#697386" text-anchor="middle" class="">generate response</text>
-<rect x="927" y="285" width="240" height="112" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
-<text x="1047.0" y="330.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Reward</text>
-<text x="1047.0" y="367.0" font-size="21" font-weight="400" fill="#697386" text-anchor="middle" class="">exact-answer scorer</text>
-<rect x="642" y="505" width="240" height="112" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
-<text x="762.0" y="550.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Logprob</text>
-<text x="762.0" y="587.0" font-size="21" font-weight="400" fill="#697386" text-anchor="middle" class="">old policy logprob</text>
-<rect x="927" y="505" width="240" height="112" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
-<text x="1047.0" y="550.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="middle" class="">PPO batch</text>
-<text x="1047.0" y="587.0" font-size="21" font-weight="400" fill="#697386" text-anchor="middle" class="">queries/responses/scores</text>
-<rect x="927" y="725" width="240" height="112" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
-<text x="1047.0" y="770.0" font-size="25" font-weight="700" fill="#1f2933" text-anchor="middle" class="">TRL PPOTrainer</text>
-<text x="1047.0" y="807.0" font-size="21" font-weight="400" fill="#697386" text-anchor="middle" class="">same update path</text>
-<line x1="312" y1="341" x2="357" y2="341" stroke="#596579" stroke-width="3"/>
-<path d="M357,341 l-16,-9 l0,18 z" fill="#596579"/>
-<line x1="597" y1="341" x2="642" y2="341" stroke="#596579" stroke-width="3"/>
-<path d="M642,341 l-16,-9 l0,18 z" fill="#596579"/>
-<line x1="882" y1="341" x2="927" y2="341" stroke="#596579" stroke-width="3"/>
-<path d="M927,341 l-16,-9 l0,18 z" fill="#596579"/>
-<line x1="762" y1="397" x2="762" y2="505" stroke="#596579" stroke-width="3"/>
-<path d="M762,505 l-9,-16 l18,0 z" fill="#596579"/>
-<line x1="1047" y1="397" x2="1047" y2="505" stroke="#596579" stroke-width="3"/>
-<path d="M1047,505 l-9,-16 l18,0 z" fill="#596579"/>
-<line x1="1047" y1="617" x2="1047" y2="725" stroke="#596579" stroke-width="3"/>
-<path d="M1047,725 l-9,-16 l18,0 z" fill="#596579"/>
-<rect x="72" y="1030" width="1096" height="330" rx="8" fill="#fff7ed" stroke="#efc58d" stroke-width="2"/>
-<text x="106.0" y="1090.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">baseline 的问题</text>
-<text x="106.0" y="1150.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">如果同一个 policy step 的同一批 prompt 因为 retry、失败恢复、调参、K</text>
-<text x="106.0" y="1193.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">从 4 增加到 6、或 reward/logprob 补算而再次准备</text>
-<text x="106.0" y="1236.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">batch，baseline 往往重新 generate、重新 reward、重新</text>
-<text x="106.0" y="1279.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">logprob。对于真实 LLM，generate 和 reward model 调用很贵。</text>
-<line x1="72" y1="1680" x2="1168" y2="1680" stroke="#d7dbe2" stroke-width="2"/>
-<text x="72.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="start" class="">RelPT report generated from this repository</text>
+<style>text{font-family:DejaVu Sans, Arial, sans-serif;fill:#1f2933}.muted{fill:#5f6978}.mono{font-family:DejaVu Sans Mono,monospace}</style>
+<text x="72.0" y="62.0" font-size="23" font-weight="400" fill="#697386" text-anchor="start" class="">Baseline PPO preparation</text>
+<line x1="72.0" y1="82.0" x2="1168.0" y2="82.0" stroke="#d7dbe2" stroke-width="2"/>
+<text x="72.0" y="160.0" font-size="45" font-weight="700" fill="#1f2933" text-anchor="start" class="">Without RelPT: retries repeat work</text>
+<rect x="72.0" y="280.0" width="238.0" height="118.0" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
+<text x="191.0" y="324.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Prompts</text>
+<text x="191.0" y="358.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">GSM8K batch</text>
+<rect x="357.0" y="280.0" width="238.0" height="118.0" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
+<text x="476.0" y="324.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Policy</text>
+<text x="476.0" y="358.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">tiny-gpt2</text>
+<rect x="642.0" y="280.0" width="238.0" height="118.0" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
+<text x="761.0" y="324.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Rollout</text>
+<text x="761.0" y="358.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">generate</text>
+<rect x="927.0" y="280.0" width="238.0" height="118.0" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
+<text x="1046.0" y="324.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Reward</text>
+<text x="1046.0" y="358.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">score</text>
+<rect x="642.0" y="510.0" width="238.0" height="118.0" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
+<text x="761.0" y="554.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">Logprob</text>
+<text x="761.0" y="588.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">old policy</text>
+<rect x="927.0" y="510.0" width="238.0" height="118.0" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
+<text x="1046.0" y="554.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">PPO batch</text>
+<text x="1046.0" y="588.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">tensors</text>
+<rect x="927.0" y="740.0" width="238.0" height="118.0" rx="8" fill="#ffffff" stroke="#cbd3df" stroke-width="2"/>
+<text x="1046.0" y="784.0" font-size="24" font-weight="700" fill="#1f2933" text-anchor="middle" class="">PPOTrainer</text>
+<text x="1046.0" y="818.0" font-size="20" font-weight="400" fill="#697386" text-anchor="middle" class="">same update</text>
+<line x1="310.0" y1="339.0" x2="357.0" y2="339.0" stroke="#596579" stroke-width="3"/>
+<path d="M357.0,339.0 l-16,-9 l0,18 z" fill="#596579"/>
+<line x1="595.0" y1="339.0" x2="642.0" y2="339.0" stroke="#596579" stroke-width="3"/>
+<path d="M642.0,339.0 l-16,-9 l0,18 z" fill="#596579"/>
+<line x1="880.0" y1="339.0" x2="927.0" y2="339.0" stroke="#596579" stroke-width="3"/>
+<path d="M927.0,339.0 l-16,-9 l0,18 z" fill="#596579"/>
+<line x1="761.0" y1="398.0" x2="761.0" y2="510.0" stroke="#596579" stroke-width="3"/>
+<path d="M761.0,510.0 l-9,-16 l18,0 z" fill="#596579"/>
+<line x1="1046.0" y1="398.0" x2="1046.0" y2="510.0" stroke="#596579" stroke-width="3"/>
+<path d="M1046.0,510.0 l-9,-16 l18,0 z" fill="#596579"/>
+<line x1="1046.0" y1="628.0" x2="1046.0" y2="740.0" stroke="#596579" stroke-width="3"/>
+<path d="M1046.0,740.0 l-9,-16 l18,0 z" fill="#596579"/>
+<rect x="72.0" y="1025.0" width="1096.0" height="330.0" rx="8" fill="#fff7ed" stroke="#efc58d" stroke-width="2"/>
+<text x="106.0" y="1088.0" font-size="34" font-weight="700" fill="#1f2933" text-anchor="start" class="">Why this wastes work</text>
+<text x="106.0" y="1150.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">A failed run, retry, cache miss investigation, or</text>
+<text x="106.0" y="1193.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">change from K=4 to K=6 can ask for almost the same</text>
+<text x="106.0" y="1236.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">batch again. A naive pipeline has no durable artifact</text>
+<text x="106.0" y="1279.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">map, so it often regenerates responses and rescans</text>
+<text x="106.0" y="1322.0" font-size="30" font-weight="400" fill="#1f2933" text-anchor="start" class="">rewards even when most rows already exist.</text>
+<line x1="72.0" y1="1680.0" x2="1168.0" y2="1680.0" stroke="#d7dbe2" stroke-width="2"/>
+<text x="72.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="start" class="">Prime_TTT RelPT report generated from this repository</text>
 <text x="1168.0" y="1719.0" font-size="21" font-weight="400" fill="#697386" text-anchor="end" class="">2</text>
 </svg>

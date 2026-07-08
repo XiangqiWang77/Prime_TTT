@@ -1,49 +1,70 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>RelPT report</title>
+<title>Prime_TTT RelPT Detailed Report</title>
 <style>
-body { font-family: Droid Sans Fallback, DejaVu Sans, Arial, sans-serif; max-width: 980px; margin: 40px auto; line-height: 1.65; color: #1f2933; }
+body { font-family: DejaVu Sans, Arial, sans-serif; max-width: 980px; margin: 40px auto; line-height: 1.65; color: #1f2933; }
 img { max-width: 100%; border: 1px solid #d6dce5; }
-code { background: #f3f6fa; padding: 2px 5px; }
+code { background: #f3f6fa; padding: 2px 5px; border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; margin: 18px 0; }
+th, td { border: 1px solid #d6dce5; padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: #f3f6fa; }
+td:nth-child(n+2), th:nth-child(n+2) { text-align: right; }
+table:nth-of-type(1) td:nth-child(2), table:nth-of-type(1) th:nth-child(2) { text-align: left; }
 </style>
-<body># RelPT 从零解释报告<br>
-<br>
-这份报告解释本仓库里的 RelPT：它是什么、用哪些 table 和 SQL join、optimizer 做什么、为什么这样做，以及最新 PPO 对照结果怎么读。<br>
-<br>
-## 一句话<br>
-<br>
-RelPT 不是新的 PPO loss。它是 post-training 前处理阶段的关系型控制层：把 prompt、trajectory、reward、logprob、advantage、batch 等中间产物表化，然后只补缺失 rows，避免重复调用 rollout/reward/logprob executor。<br>
-<br>
-## 图 1：RelPT 控制层<br>
-<br>
-<img src="figures/relpt_pipeline.svg"><br>
-<br>
-## 最新真实 TRL PPO 对照<br>
-<br>
-- model: `sshleifer/tiny-gpt2`<br>
-- dataset: `pyarrow_arrow_cache`<br>
-- framework: `trl_ppo_0.11.4`<br>
-- steps: `200`<br>
-- batch size: `4`<br>
-- output: `runs/metrics/trl_ppo_relpt_17266929.json`<br>
-<br>
-| metric | baseline | relpt | saved |<br>
-| --- | ---: | ---: | ---: |<br>
-| total_ms | 20576.0 | 12201.1 | 40.7% |<br>
-| prep_ms | 14955.4 | 7580.0 | 49.3% |<br>
-| generate_ms | 14887.2 | 7516.4 | 49.5% |<br>
-| reward_ms | 68.3 | 40.5 | 40.6% |<br>
-| generated_rows | 1600 | 800 | 50.0% |<br>
-| reward_rows | 1600 | 800 | 50.0% |<br>
-<br>
-<img src="figures/trl_ppo_result.svg"><br>
-<br>
-## 完整 SQLite RelPT 原型结果<br>
-<br>
-<img src="figures/simulated_relpt_result.svg"><br>
-<br>
-## 怎么读结果<br>
-<br>
-这次结果说明 RelPT 可以减少 PPO batch preparation 的重复工作。它没有说明 tiny-gpt2 在 GSM8K 上学会了数学，因为 final_eval_reward_delta 和 mean_train_reward_delta 都是 0.0。这个实验的重点是系统效率：同一个 PPOTrainer、同一个模型、同一个数据集，RelPT 减少了 generate/reward rows 和 preparation time。<br>
-<br>
-PDF 版本见 `docs/relpt_report.pdf`。</body>
+<body>
+<h1>Prime_TTT RelPT Detailed Report</h1>
+<p>This report explains the RelPT component in Prime_TTT: what it is, how it fits around PPO, which relational tables and SQL joins it uses, what the optimizer controls, and how to read the latest PPO comparison.</p>
+<h2>One-sentence summary</h2>
+<p>RelPT is not a new PPO loss. It is a relational control layer for post-training preparation: prompts, trajectories, rewards, logprobs, advantages, batches, policies, updates, and metrics are materialized as append-only tables, so repeated PPO preparation can reuse existing rows and only call expensive rollout, reward, or logprob executors for missing work.</p>
+<h2>Figure 1: RelPT control layer</h2>
+<p><img src="figures/relpt_pipeline.svg" alt="RelPT pipeline"></p>
+<h2>Detailed illustration</h2>
+<p>In a normal PPO preparation loop, the system starts from a prompt batch, calls a policy model to generate responses, scores each response with a reward function or reward model, computes old-policy logprobs, builds advantages, and finally hands a tensor batch to PPOTrainer. If the same policy step is retried, if a run fails after generation but before training, if <code>K</code> rollouts per prompt are increased, or if only rewards/logprobs need to be recomputed, a naive pipeline often repeats work that has already been done.</p>
+<p>RelPT inserts a relational layer before the trainer. The trainer remains a black box; rollout, reward, and logprob systems also remain black-box executors. RelPT only controls the artifacts that flow between them. Each artifact is written into an append-only SQLite table with lineage keys such as <code>prompt_id</code>, <code>policy_id</code>, <code>trajectory_id</code>, <code>reward_model_id</code>, and <code>batch_id</code>. Before preparing a PPO batch, RelPT queries those tables to decide which rows already exist and which rows are still missing.</p>
+<p>The key idea is delta execution:</p>
+<ol>
+<li><code>prompt LEFT JOIN trajectory</code> identifies prompts that still need rollout rows for the current policy and requested number of responses.</li>
+<li><code>trajectory LEFT JOIN reward</code> identifies generated responses that still need scoring.</li>
+<li><code>reward_cache</code> reuses deterministic reward results across policy versions when the same prompt and response hash appear again.</li>
+<li><code>trajectory LEFT JOIN logprob</code> identifies responses that still need old policy logprob computation.</li>
+<li>Completed trajectory, reward, logprob, and advantage rows are joined into a materialized PPO batch.</li>
+<li>PPOTrainer consumes the same batch shape as the baseline path, so RelPT changes preparation and reuse, not the training loss.</li>
+</ol>
+<h2>Tables and lineage</h2>
+<table><thead><tr><th>table</th><th>role</th></tr></thead><tbody>
+<tr><td><code>prompt</code></td><td>Input prompt text, dataset metadata, and labels where available.</td></tr>
+<tr><td><code>policy</code></td><td>Policy versions before and after PPO updates.</td></tr>
+<tr><td><code>trajectory</code></td><td>Generated responses keyed by prompt and policy.</td></tr>
+<tr><td><code>reward</code></td><td>Reward rows for specific trajectories and reward models.</td></tr>
+<tr><td><code>reward_cache</code></td><td>Deterministic reward reuse keyed by reward model, prompt, and response hash.</td></tr>
+<tr><td><code>logprob</code></td><td>Old-policy logprob rows needed by PPO.</td></tr>
+<tr><td><code>advantage</code></td><td>Return and advantage rows used for training.</td></tr>
+<tr><td><code>batch</code></td><td>Materialized PPO batch membership.</td></tr>
+<tr><td><code>update_record</code></td><td>Lineage from input policy, batch, trainer backend, and output policy.</td></tr>
+<tr><td><code>metric</code></td><td>Runtime, row-count, reward, and system metrics.</td></tr>
+</tbody></table>
+<h2>Latest TRL PPO comparison</h2>
+<ul>
+<li>model: <code>sshleifer/tiny-gpt2</code></li>
+<li>dataset: <code>pyarrow_arrow_cache</code></li>
+<li>framework: <code>trl_ppo_0.11.4</code></li>
+<li>steps: <code>200</code></li>
+<li>batch size: <code>4</code></li>
+<li>output: <code>runs/metrics/trl_ppo_relpt_17266929.json</code></li>
+</ul>
+<table><thead><tr><th>metric</th><th>baseline</th><th>relpt</th><th>saved</th></tr></thead><tbody>
+<tr><td>total_ms</td><td>20576.0</td><td>12201.1</td><td>40.7%</td></tr>
+<tr><td>prep_ms</td><td>14955.4</td><td>7580.0</td><td>49.3%</td></tr>
+<tr><td>generate_ms</td><td>14887.2</td><td>7516.4</td><td>49.5%</td></tr>
+<tr><td>reward_ms</td><td>68.3</td><td>40.5</td><td>40.6%</td></tr>
+<tr><td>generated_rows</td><td>1600</td><td>800</td><td>50.0%</td></tr>
+<tr><td>reward_rows</td><td>1600</td><td>800</td><td>50.0%</td></tr>
+</tbody></table>
+<p><img src="figures/trl_ppo_result.svg" alt="TRL PPO result"></p>
+<h2>Complete SQLite RelPT prototype result</h2>
+<p>The full SQLite prototype saved 50.0% of rollout rows, 99.3% of reward executor rows, and 50.0% of logprob rows at 200 steps. Training rows were unchanged because RelPT intentionally leaves PPO itself as the same black-box update.</p>
+<p><img src="figures/simulated_relpt_result.svg" alt="Simulated RelPT result"></p>
+<h2>How to read the result</h2>
+<p>The result supports a systems claim: RelPT can reduce duplicated PPO batch preparation work while keeping the PPO trainer path unchanged. It does not show that <code>sshleifer/tiny-gpt2</code> learned GSM8K math, because <code>final_eval_reward_delta</code> and <code>mean_train_reward_delta</code> are both <code>0.0</code> in this run. The useful signal is executor efficiency: with the same PPOTrainer, the same model, and the same dataset, RelPT reduces generated rows, reward rows, and preparation time.</p>
+<p>PDF and HTML copies are generated from <code>docs/generate_relpt_report.py</code>.</p>
+</body>

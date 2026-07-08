@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Generate a Chinese RelPT explanation report with SVG figures and a PDF.
+"""Generate the English Prime_TTT / RelPT report assets.
 
-The environment intentionally avoids external Python packages.  This script
-therefore writes SVG pages directly and asks rsvg-convert to assemble the PDF.
+The script intentionally depends only on the Python standard library plus the
+system `rsvg-convert` binary for PDF assembly.
 """
 
 from __future__ import annotations
@@ -20,9 +20,9 @@ ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 FIGURES = DOCS / "figures"
 PAGES = DOCS / "report_pages"
-FONT_FAMILY = "Droid Sans Fallback, DejaVu Sans, Arial, sans-serif"
 W, H = 1240, 1754
 M = 72
+FONT = "DejaVu Sans, Arial, sans-serif"
 
 
 def load_json(path: str) -> Dict[str, object]:
@@ -34,71 +34,115 @@ TRL = load_json("runs/metrics/trl_ppo_relpt_17266929.json")
 LOCAL = load_json("runs/metrics/relpt_gsm8k_200step_local.json")
 
 
-def esc(s: object) -> str:
-    return html.escape(str(s), quote=True)
+def esc(value: object) -> str:
+    return html.escape(str(value), quote=True)
 
 
-def wrap_text(text: str, chars: int) -> List[str]:
-    lines: List[str] = []
-    for para in str(text).split("\n"):
+def pct(value: object) -> str:
+    return f"{float(value):.1f}%"
+
+
+def seconds(ms: object) -> str:
+    return f"{float(ms) / 1000.0:.1f}s"
+
+
+def wrap(text: str, chars: int) -> List[str]:
+    out: List[str] = []
+    for para in text.split("\n"):
         para = para.strip()
         if not para:
-            lines.append("")
-            continue
-        # Chinese has no spaces; textwrap still works acceptably by width.
-        lines.extend(textwrap.wrap(para, width=chars, break_long_words=True, replace_whitespace=False))
-    return lines
+            out.append("")
+        else:
+            out.extend(textwrap.wrap(para, width=chars, break_long_words=False))
+    return out
 
 
 class Svg:
-    def __init__(self, title: str):
+    def __init__(self, eyebrow: str):
         self.parts: List[str] = [
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">',
             '<rect width="100%" height="100%" fill="#fbfaf7"/>',
-            f'<style>text{{font-family:{FONT_FAMILY};fill:#1f2933}} .muted{{fill:#5e6978}} .small{{font-size:23px}} .body{{font-size:28px}} .h1{{font-size:54px;font-weight:700}} .h2{{font-size:38px;font-weight:700}} .h3{{font-size:30px;font-weight:700}} .mono{{font-family:Source Code Pro,DejaVu Sans Mono,monospace}}</style>',
+            (
+                "<style>"
+                f"text{{font-family:{FONT};fill:#1f2933}}"
+                ".muted{fill:#5f6978}.mono{font-family:DejaVu Sans Mono,monospace}"
+                "</style>"
+            ),
         ]
-        self.text(M, 62, title, 23, "#697386")
+        self.text(M, 62, eyebrow, 23, "#697386")
         self.line(M, 82, W - M, 82, "#d7dbe2", 2)
 
-    def text(self, x: float, y: float, value: object, size: int = 28, fill: str = "#1f2933", weight: str = "400", anchor: str = "start", cls: str = "") -> None:
+    def text(
+        self,
+        x: float,
+        y: float,
+        value: object,
+        size: int = 28,
+        fill: str = "#1f2933",
+        weight: str = "400",
+        anchor: str = "start",
+        cls: str = "",
+    ) -> None:
         self.parts.append(
-            f'<text x="{x:.1f}" y="{y:.1f}" font-size="{size}" font-weight="{weight}" fill="{fill}" text-anchor="{anchor}" class="{cls}">{esc(value)}</text>'
+            f'<text x="{x:.1f}" y="{y:.1f}" font-size="{size}" font-weight="{weight}" '
+            f'fill="{fill}" text-anchor="{anchor}" class="{cls}">{esc(value)}</text>'
         )
 
-    def multiline(self, x: float, y: float, text: str, size: int = 28, width_chars: int = 45, line_gap: int = 38, fill: str = "#1f2933") -> float:
+    def multiline(
+        self,
+        x: float,
+        y: float,
+        text: str,
+        size: int = 28,
+        chars: int = 50,
+        gap: int = 38,
+        fill: str = "#1f2933",
+        weight: str = "400",
+    ) -> float:
         yy = y
-        for line in wrap_text(text, width_chars):
-            if line == "":
-                yy += line_gap // 2
+        for line in wrap(text, chars):
+            if not line:
+                yy += gap // 2
             else:
-                self.text(x, yy, line, size, fill)
-                yy += line_gap
+                self.text(x, yy, line, size, fill, weight)
+                yy += gap
         return yy
 
-    def rect(self, x: float, y: float, w: float, h: float, fill: str = "#ffffff", stroke: str = "#d9dee7", rx: int = 8, sw: int = 2) -> None:
-        self.parts.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" fill="{fill}" stroke="{stroke}" stroke-width="{sw}"/>')
+    def rect(
+        self,
+        x: float,
+        y: float,
+        w: float,
+        h: float,
+        fill: str = "#ffffff",
+        stroke: str = "#d9dee7",
+        rx: int = 8,
+        sw: int = 2,
+    ) -> None:
+        self.parts.append(
+            f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" '
+            f'rx="{rx}" fill="{fill}" stroke="{stroke}" stroke-width="{sw}"/>'
+        )
 
-    def line(self, x1: float, y1: float, x2: float, y2: float, stroke: str = "#9098a5", sw: int = 2, dash: str = "") -> None:
-        extra = f' stroke-dasharray="{dash}"' if dash else ""
-        self.parts.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{stroke}" stroke-width="{sw}"{extra}/>')
+    def line(self, x1: float, y1: float, x2: float, y2: float, stroke: str = "#9098a5", sw: int = 2) -> None:
+        self.parts.append(
+            f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" '
+            f'stroke="{stroke}" stroke-width="{sw}"/>'
+        )
 
     def arrow(self, x1: float, y1: float, x2: float, y2: float, stroke: str = "#596579") -> None:
         self.line(x1, y1, x2, y2, stroke, 3)
         if abs(x2 - x1) >= abs(y2 - y1):
             sign = 1 if x2 > x1 else -1
-            self.parts.append(f'<path d="M{x2},{y2} l{-16*sign},-9 l0,18 z" fill="{stroke}"/>')
+            self.parts.append(f'<path d="M{x2:.1f},{y2:.1f} l{-16 * sign},-9 l0,18 z" fill="{stroke}"/>')
         else:
             sign = 1 if y2 > y1 else -1
-            self.parts.append(f'<path d="M{x2},{y2} l-9,{-16*sign} l18,0 z" fill="{stroke}"/>')
-
-    def pill(self, x: float, y: float, text: str, fill: str, stroke: str = "#ccd3dd") -> None:
-        self.rect(x, y, 254, 54, fill, stroke, 27, 1)
-        self.text(x + 127, y + 36, text, 24, "#1f2933", "700", "middle")
+            self.parts.append(f'<path d="M{x2:.1f},{y2:.1f} l-9,{-16 * sign} l18,0 z" fill="{stroke}"/>')
 
     def footer(self, page: int) -> None:
         self.line(M, H - 74, W - M, H - 74, "#d7dbe2", 2)
-        self.text(M, H - 35, "RelPT report generated from this repository", 21, "#697386")
-        self.text(W - M, H - 35, f"{page}", 21, "#697386", anchor="end")
+        self.text(M, H - 35, "Prime_TTT RelPT report generated from this repository", 21, "#697386")
+        self.text(W - M, H - 35, str(page), 21, "#697386", anchor="end")
 
     def save(self, path: Path) -> None:
         self.parts.append("</svg>")
@@ -106,81 +150,96 @@ class Svg:
 
 
 def bar(svg: Svg, x: float, y: float, label: str, base: float, relpt: float, unit: str, maxv: float) -> None:
-    svg.text(x, y + 30, label, 26, "#1f2933", "700")
-    bx = x + 260
-    bw = 610
+    svg.text(x, y + 30, label, 25, weight="700")
+    bx, bw = x + 255, 560
     svg.rect(bx, y, bw, 34, "#edf1f5", "#edf1f5", 4, 0)
     svg.rect(bx, y, bw * base / maxv, 34, "#d86c59", "#d86c59", 4, 0)
-    svg.text(bx + bw + 22, y + 27, f"baseline {base:.1f}{unit}", 23, "#5e6978")
-    svg.rect(bx, y + 48, bw, 34, "#edf1f5", "#edf1f5", 4, 0)
-    svg.rect(bx, y + 48, bw * relpt / maxv, 34, "#2f8f83", "#2f8f83", 4, 0)
-    svg.text(bx + bw + 22, y + 75, f"RelPT {relpt:.1f}{unit}", 23, "#5e6978")
+    svg.text(bx + bw + 22, y + 27, f"baseline {base:.1f}{unit}", 22, "#5e6978")
+    svg.rect(bx, y + 50, bw, 34, "#edf1f5", "#edf1f5", 4, 0)
+    svg.rect(bx, y + 50, bw * relpt / maxv, 34, "#2f8f83", "#2f8f83", 4, 0)
+    svg.text(bx + bw + 22, y + 77, f"RelPT {relpt:.1f}{unit}", 22, "#5e6978")
 
 
-def page1() -> Path:
-    s = Svg("What is RelPT?")
-    s.text(M, 170, "RelPT 是什么，为什么这次实验要做它", 52, weight="700")
-    y = s.multiline(
+def node(svg: Svg, x: float, y: float, title: str, body: str, fill: str = "#ffffff", w: int = 238, h: int = 118) -> None:
+    svg.rect(x, y, w, h, fill, "#cbd3df")
+    svg.text(x + w / 2, y + 44, title, 24, weight="700", anchor="middle")
+    svg.text(x + w / 2, y + 78, body, 20, "#697386", anchor="middle")
+
+
+def page_01() -> Path:
+    s = Svg("Prime_TTT / RelPT")
+    s.text(M, 160, "RelPT: reusable PPO preparation", 48, weight="700")
+    s.text(M, 218, "through relational artifact control", 42, weight="700")
+    s.multiline(
         M,
-        245,
-        "RelPT 不是新的 PPO loss，也不是新的大模型。它是 post-training 前处理阶段的关系型控制层：把 prompt、trajectory、reward、logprob、advantage、batch 等中间产物放进 append-only tables，用 SQL/join/cache 判断哪些东西已经算过，哪些东西还缺，然后只调用缺失部分的昂贵 executor。",
+        295,
+        "RelPT is the system layer in Prime_TTT that makes post-training artifacts reusable. "
+        "It records prompts, rollouts, rewards, logprobs, advantages, batches, policies, and "
+        "updates as append-only relational rows, then computes only the missing delta before PPO.",
         31,
-        43,
+        52,
         44,
     )
-    y += 28
-    s.rect(M, y, W - 2 * M, 330, "#ffffff", "#d4dae3")
-    s.text(M + 34, y + 62, "一句话版本", 34, weight="700")
-    s.multiline(M + 34, y + 120, "Baseline 每次重新准备 PPO batch；RelPT 先查表，能复用 rollout/reward/logprob/batch 的就复用，只补缺口。PPO trainer 本身保持不变。", 32, 38, 46)
-    y += 400
-    s.text(M, y, "本报告覆盖", 37, weight="700")
+    s.rect(M, 555, W - 2 * M, 320, "#ffffff", "#d4dae3")
+    s.text(M + 34, 615, "The short version", 34, weight="700")
+    s.multiline(
+        M + 34,
+        675,
+        "Baseline preparation redoes generation, reward scoring, and logprob work. RelPT first "
+        "queries the artifact tables. Existing rows are reused; only absent rows trigger expensive "
+        "executors. PPOTrainer still receives the same batch shape.",
+        30,
+        55,
+        43,
+    )
+    s.text(M, 975, "What this report illustrates", 37, weight="700")
     items = [
-        "1. PPO baseline 从 prompt 到 update 的完整流程",
-        "2. RelPT 加在哪一层，和 PPO/TRL/vLLM/reward model 的边界",
-        "3. RelPT 使用哪些表、哪些 join、什么 SQL optimizer",
-        "4. 当前仓库中两套实现：完整 SQLite 原型 + TRL PPO cache 版本",
-        "5. 最新 200-step tiny-gpt2/GSM8K 结果图，以及结果应该如何解读",
+        "Where RelPT sits around rollout, reward, logprob, and PPOTrainer.",
+        "How SQL joins turn retries and partial recomputation into delta work.",
+        "Which tables carry lineage for reproducibility and recovery.",
+        "What the latest same-framework TRL PPO measurement shows.",
+        "Why the result is a systems efficiency signal, not a model-quality claim.",
     ]
-    yy = y + 62
+    y = 1040
     for item in items:
-        s.text(M + 20, yy, item, 29)
-        yy += 50
+        s.text(M + 22, y, "- " + item, 28)
+        y += 55
     s.footer(1)
     p = PAGES / "page_01.svg"
     s.save(p)
     return p
 
 
-def page2() -> Path:
-    s = Svg("Baseline PPO dataflow")
-    s.text(M, 160, "没有 RelPT 时：PPO batch preparation 每次重跑", 45, weight="700")
+def page_02() -> Path:
+    s = Svg("Baseline PPO preparation")
+    s.text(M, 160, "Without RelPT: retries repeat work", 45, weight="700")
     boxes = [
-        (M, 285, "GSM8K prompts", "问题文本 + 标准答案"),
-        (M + 285, 285, "Policy model", "sshleifer/tiny-gpt2"),
-        (M + 570, 285, "Rollout", "generate response"),
-        (M + 855, 285, "Reward", "exact-answer scorer"),
-        (M + 570, 505, "Logprob", "old policy logprob"),
-        (M + 855, 505, "PPO batch", "queries/responses/scores"),
-        (M + 855, 725, "TRL PPOTrainer", "same update path"),
+        (M, 280, "Prompts", "GSM8K batch"),
+        (M + 285, 280, "Policy", "tiny-gpt2"),
+        (M + 570, 280, "Rollout", "generate"),
+        (M + 855, 280, "Reward", "score"),
+        (M + 570, 510, "Logprob", "old policy"),
+        (M + 855, 510, "PPO batch", "tensors"),
+        (M + 855, 740, "PPOTrainer", "same update"),
     ]
-    for x, y, title, sub in boxes:
-        s.rect(x, y, 240, 112, "#ffffff", "#cbd3df")
-        s.text(x + 120, y + 45, title, 25, weight="700", anchor="middle")
-        s.text(x + 120, y + 82, sub, 21, "#697386", anchor="middle")
-    s.arrow(M + 240, 341, M + 285, 341)
-    s.arrow(M + 525, 341, M + 570, 341)
-    s.arrow(M + 810, 341, M + 855, 341)
-    s.arrow(M + 690, 397, M + 690, 505)
-    s.arrow(M + 975, 397, M + 975, 505)
-    s.arrow(M + 975, 617, M + 975, 725)
-    s.rect(M, 1030, W - 2 * M, 330, "#fff7ed", "#efc58d")
-    s.text(M + 34, 1090, "baseline 的问题", 34, weight="700")
+    for args in boxes:
+        node(s, *args)
+    s.arrow(M + 238, 339, M + 285, 339)
+    s.arrow(M + 523, 339, M + 570, 339)
+    s.arrow(M + 808, 339, M + 855, 339)
+    s.arrow(M + 689, 398, M + 689, 510)
+    s.arrow(M + 974, 398, M + 974, 510)
+    s.arrow(M + 974, 628, M + 974, 740)
+    s.rect(M, 1025, W - 2 * M, 330, "#fff7ed", "#efc58d")
+    s.text(M + 34, 1088, "Why this wastes work", 34, weight="700")
     s.multiline(
         M + 34,
         1150,
-        "如果同一个 policy step 的同一批 prompt 因为 retry、失败恢复、调参、K 从 4 增加到 6、或 reward/logprob 补算而再次准备 batch，baseline 往往重新 generate、重新 reward、重新 logprob。对于真实 LLM，generate 和 reward model 调用很贵。",
+        "A failed run, retry, cache miss investigation, or change from K=4 to K=6 can ask for "
+        "almost the same batch again. A naive pipeline has no durable artifact map, so it often "
+        "regenerates responses and rescans rewards even when most rows already exist.",
         30,
-        48,
+        55,
         43,
     )
     s.footer(2)
@@ -189,296 +248,412 @@ def page2() -> Path:
     return p
 
 
-def page3() -> Path:
-    s = Svg("RelPT relational control layer")
-    s.text(M, 155, "加上 RelPT 后：先查关系表，只补缺失行", 45, weight="700")
+def page_03() -> Path:
+    s = Svg("RelPT dataflow")
+    s.text(M, 155, "With RelPT: query first, execute only the delta", 45, weight="700")
     xs = [M, M + 285, M + 570, M + 855]
-    y = 270
-    for i, name in enumerate(["prompt", "trajectory", "reward", "logprob"]):
-        s.rect(xs[i], y, 240, 94, "#f7fbff", "#9db7d5")
-        s.text(xs[i] + 120, y + 58, name, 28, weight="700", anchor="middle")
+    titles = [("prompt", "input rows"), ("trajectory", "responses"), ("reward", "scores"), ("logprob", "PPO refs")]
+    for i, (title, sub) in enumerate(titles):
+        node(s, xs[i], 270, title, sub, "#f7fbff")
         if i:
-            s.arrow(xs[i - 1] + 240, y + 47, xs[i], y + 47, "#5b7799")
-    s.rect(M + 285, y + 190, 240, 94, "#f6fff8", "#92c9a2")
-    s.text(M + 405, y + 248, "reward_cache", 26, weight="700", anchor="middle")
-    s.arrow(M + 405, y + 190, M + 690, y + 94, "#5f9b6a")
-    s.rect(M + 570, y + 190, 240, 94, "#f8f5ff", "#b6a4df")
-    s.text(M + 690, y + 248, "advantage", 26, weight="700", anchor="middle")
-    s.arrow(M + 690, y + 190, M + 690, y + 94, "#8068b5")
-    s.rect(M + 855, y + 190, 240, 94, "#fffaf0", "#d9b36c")
-    s.text(M + 975, y + 248, "batch", 26, weight="700", anchor="middle")
-    s.arrow(M + 810, y + 47, M + 975, y + 190, "#9f7f39")
-    s.text(M, 690, "RelPT optimizer 做的事情", 38, weight="700")
-    steps = [
-        ("1", "LEFT JOIN prompt/trajectory", "找当前 policy 下缺多少 rollout"),
-        ("2", "JOIN trajectory/reward_cache", "同一 prompt + 同一 response hash 的 reward 直接复用"),
-        ("3", "LEFT JOIN trajectory/logprob", "只对缺 logprob 的 trajectory 调 executor"),
-        ("4", "JOIN 完整 rows", "materialize 成 PPO batch 交给 trainer"),
+            s.arrow(xs[i - 1] + 238, 329, xs[i], 329, "#5b7799")
+    node(s, M + 285, 500, "reward_cache", "semantic reuse", "#f6fff8")
+    node(s, M + 570, 500, "advantage", "returns", "#f8f5ff")
+    node(s, M + 855, 500, "batch", "materialized", "#fffaf0")
+    s.arrow(M + 404, 500, M + 690, 388, "#5f9b6a")
+    s.arrow(M + 690, 500, M + 690, 388, "#8068b5")
+    s.arrow(M + 974, 500, M + 974, 388, "#9f7f39")
+    s.text(M, 760, "Delta planner worklists", 38, weight="700")
+    rows = [
+        ("rollout_requests", "prompts with too few usable trajectories for the current policy"),
+        ("reward_traj_ids", "trajectories whose reward is not found in reward or reward_cache"),
+        ("logprob_traj_ids", "trajectories missing old-policy logprob rows"),
+        ("advantage_traj_ids", "rewarded trajectories missing returns and advantages"),
     ]
-    yy = 760
-    for n, title, desc in steps:
-        s.pill(M, yy - 36, n, "#e8eef7")
-        s.text(M + 300, yy, title, 30, weight="700")
-        s.text(M + 300, yy + 42, desc, 27, "#5e6978")
-        yy += 128
+    y = 830
+    for name, desc in rows:
+        s.rect(M, y - 38, 280, 64, "#e8eef7", "#c9d4e5")
+        s.text(M + 140, y + 4, name, 23, weight="700", anchor="middle", cls="mono")
+        s.text(M + 320, y + 2, desc, 27, "#4b5563")
+        y += 112
     s.footer(3)
     p = PAGES / "page_03.svg"
     s.save(p)
     return p
 
 
-def page4() -> Path:
-    s = Svg("Tables and join semantics")
-    s.text(M, 155, "RelPT 的表和关系：不是 magic，是 SQL materialization", 43, weight="700")
+def page_04() -> Path:
+    s = Svg("Tables and joins")
+    s.text(M, 155, "Tables make lineage, reuse, and recovery explicit", 43, weight="700")
     rows = [
-        ("prompt", "输入 prompt、GSM8K 问题、标签/metadata"),
-        ("policy", "PPO 更新前后的 policy version；每次 update append 一个版本"),
-        ("trajectory", "rollout 结果：prompt_id、policy_id、response、response_hash"),
-        ("reward", "某个 reward_model 对 trajectory 的 reward"),
-        ("reward_cache", "按 reward_model_id + prompt_id + response_hash 复用确定性 reward"),
-        ("logprob", "PPO 需要的 old-policy logprob"),
-        ("advantage", "return / advantage，中间训练量"),
+        ("prompt", "input text, dataset metadata, compact labels"),
+        ("policy", "policy versions before and after PPO updates"),
+        ("trajectory", "rollout artifacts keyed by prompt and policy"),
+        ("reward", "score for a trajectory under a reward model"),
+        ("reward_cache", "deterministic reuse by reward model, prompt, response hash"),
+        ("logprob", "old-policy logprob rows required by PPO"),
+        ("advantage", "return and advantage rows"),
         ("batch", "materialized PPO batch membership"),
-        ("update_record", "PPO 输入 policy、输出 policy、batch、trainer backend lineage"),
-        ("metric", "训练和系统指标"),
+        ("update_record", "input policy, output policy, batch, trainer lineage"),
+        ("metric", "runtime, row-count, reward, and system metrics"),
     ]
-    y = 235
+    y = 230
     for i, (name, desc) in enumerate(rows):
         fill = "#ffffff" if i % 2 == 0 else "#f3f6fa"
-        s.rect(M, y, 250, 58, fill, "#d6dce5", 2, 1)
-        s.rect(M + 250, y, W - 2 * M - 250, 58, fill, "#d6dce5", 2, 1)
-        s.text(M + 22, y + 38, name, 25, weight="700", cls="mono")
-        s.text(M + 280, y + 38, desc, 25)
+        s.rect(M, y, 270, 58, fill, "#d6dce5", 2, 1)
+        s.rect(M + 270, y, W - 2 * M - 270, 58, fill, "#d6dce5", 2, 1)
+        s.text(M + 22, y + 38, name, 24, weight="700", cls="mono")
+        s.text(M + 300, y + 38, desc, 24)
         y += 58
-    s.rect(M, 930, W - 2 * M, 445, "#f8fbff", "#c8d7ea")
-    s.text(M + 34, 990, "SQL optimizer 是什么？", 34, weight="700")
+    s.rect(M, 930, W - 2 * M, 430, "#f8fbff", "#c8d7ea")
+    s.text(M + 34, 990, "Join semantics", 34, weight="700")
     s.multiline(
         M + 34,
         1050,
-        "当前实现用 Python 标准库 sqlite3。SQLite 负责真实 SQL 执行、索引/unique constraint 和本地 query planning。RelPT 自己的 optimizer 不是替代 SQLite，而是在 prepare_ppo_batch 前生成 worklists：rollout_requests、reward_traj_ids、logprob_traj_ids、advantage_traj_ids。然后 SQLite join 把已有 rows 和缺失 rows 分开。",
+        "The important join is not only by trajectory id. reward_cache joins on reward_model_id, "
+        "prompt_id, and response_hash, so deterministic rewards can be reused across policy "
+        "versions when the same prompt-response pair appears again. Other LEFT JOINs identify "
+        "missing rollouts, rewards, logprobs, and advantages.",
         29,
-        51,
+        58,
         42,
     )
-    s.multiline(M + 34, 1262, "为什么这么做：因为 post-training 的昂贵部分通常在表外 executor，例如 LLM generation、reward model、logprob engine。SQL 层的任务是避免重复调用这些 executor。", 29, 51, 42)
     s.footer(4)
     p = PAGES / "page_04.svg"
     s.save(p)
     return p
 
 
-def page5() -> Path:
-    s = Svg("Implementation in this repository")
-    s.text(M, 155, "这个仓库里的具体实现", 48, weight="700")
-    s.rect(M, 245, W - 2 * M, 365, "#ffffff", "#cbd3df")
-    s.text(M + 34, 305, "完整 RelPT SQLite 原型", 35, weight="700")
-    s.multiline(M + 34, 365, "文件：relpt.py。核心类 RelPT 创建 append-only SQLite tables。RelPT.plan_ppo_batch 生成缺失 worklist；RelPT.prepare_ppo_batch 调用 rollout/reward/logprob/trainer adapters。测试 test_relpt.py 验证同一个 PPO batch retry 不再调用昂贵 executor。", 29, 49, 42)
-    s.rect(M, 680, W - 2 * M, 365, "#ffffff", "#cbd3df")
-    s.text(M + 34, 740, "GSM8K simulated benchmark", 35, weight="700")
-    s.multiline(M + 34, 800, "文件：relpt_gsm8k_ppo.py。prompt 来自本地 GSM8K Arrow cache；rollout/PPO executor 是 toy softmax policy 的模拟器。它验证完整 RelPT 表结构能省 rollout/reward/logprob 行数，但不是实模型质量实验。", 29, 49, 42)
-    s.rect(M, 1115, W - 2 * M, 365, "#ffffff", "#cbd3df")
-    s.text(M + 34, 1175, "真实 TRL PPO same-framework 对照", 35, weight="700")
-    s.multiline(M + 34, 1235, "文件：trl_gsm8k_relpt_ppo.py。baseline 和 RelPT 都调用同一个 TRL PPOTrainer，同一个模型 sshleifer/tiny-gpt2，同一个 GSM8K local Arrow cache。这里的 RelPT 是较小的 prepared-batch cache，目的是证明不改变 PPO update path 时也能减少重复 batch preparation。", 29, 49, 42)
+def page_05() -> Path:
+    s = Svg("Implementation map")
+    s.text(M, 155, "Two implementations, one control-layer idea", 45, weight="700")
+    s.rect(M, 250, W - 2 * M, 420, "#ffffff", "#d4dae3")
+    s.text(M + 34, 310, "Full SQLite RelPT prototype", 34, weight="700")
+    s.multiline(
+        M + 34,
+        370,
+        "`relpt.py` creates the append-only schema and implements `RelPT.plan_ppo_batch` plus "
+        "`RelPT.prepare_ppo_batch`. Rollout, reward, logprob, and PPO training are black-box "
+        "executors, which makes the relational contract testable without GPU LLM frameworks.",
+        29,
+        58,
+        42,
+    )
+    s.rect(M, 760, W - 2 * M, 430, "#ffffff", "#d4dae3")
+    s.text(M + 34, 820, "Same-framework TRL PPO comparison", 34, weight="700")
+    s.multiline(
+        M + 34,
+        880,
+        "`trl_gsm8k_relpt_ppo.py` keeps both arms on the same TRL PPOTrainer path. The RelPT "
+        "arm caches prepared query, response, and reward rows for retry reuse; the baseline "
+        "prepares them again. This isolates preparation efficiency from trainer changes.",
+        29,
+        58,
+        42,
+    )
+    s.rect(M, 1280, W - 2 * M, 160, "#f6fff8", "#92c9a2")
+    s.text(M + 34, 1340, "Boundary", 32, weight="700")
+    s.text(M + 34, 1392, "RelPT changes artifact planning and reuse. It does not change PPO loss.", 29)
     s.footer(5)
     p = PAGES / "page_05.svg"
     s.save(p)
     return p
 
 
-def page6() -> Path:
-    s = Svg("Latest TRL PPO result")
-    s.text(M, 155, "最新 200-step TRL PPO：RelPT 前后差异", 45, weight="700")
-    cfg = TRL["config"]  # type: ignore[index]
-    s.rect(M, 225, W - 2 * M, 275, "#f8fbff", "#c8d7ea")
-    s.text(M + 34, 285, "实验配置", 34, weight="700")
-    lines = [
-        f"model = {cfg['model_name']}",
-        f"dataset = {cfg['dataset_source']}",
-        f"framework = {cfg['framework']}",
-        f"steps = {cfg['steps']}, batch_size = {cfg['batch_size']}, max_new_tokens = {cfg['max_new_tokens']}",
-        f"job output = {cfg['output']}",
-    ]
-    yy = 335
-    for line in lines:
-        s.text(M + 48, yy, line, 25, "#394150", cls="mono")
-        yy += 34
-    b = TRL["baseline"]  # type: ignore[index]
-    r = TRL["relpt"]  # type: ignore[index]
-    max_time = max(float(b["total_ms"]), float(b["prep_ms"]), float(b["generate_ms"])) / 1000.0
-    y = 585
-    bar(s, M, y, "total time", float(b["total_ms"]) / 1000, float(r["total_ms"]) / 1000, "s", max_time)
-    bar(s, M, y + 145, "prep time", float(b["prep_ms"]) / 1000, float(r["prep_ms"]) / 1000, "s", max_time)
-    bar(s, M, y + 290, "generate time", float(b["generate_ms"]) / 1000, float(r["generate_ms"]) / 1000, "s", max_time)
-    max_rows = max(float(b["generated_rows"]), float(b["reward_rows"]))
-    bar(s, M, y + 470, "generated rows", float(b["generated_rows"]), float(r["generated_rows"]), "", max_rows)
-    bar(s, M, y + 615, "reward rows", float(b["reward_rows"]), float(r["reward_rows"]), "", max_rows)
-    s.rect(M, 1480, W - 2 * M, 150, "#ffffff", "#d6dce5")
-    savings = TRL["savings"]  # type: ignore[index]
-    s.text(M + 34, 1530, f"总时间节省 {float(savings['total_ms_saved_pct']):.1f}%；生成行数和 reward 行数各减少 50.0%。", 29, weight="700")
-    s.multiline(
-        M + 34,
-        1572,
-        "final_eval_reward_delta = 0.0，说明这次实验主要证明系统省计算；它不证明 tiny-gpt2 数学能力提升。",
-        24,
-        58,
-        32,
-        "#5e6978",
-    )
+def page_06() -> Path:
+    s = Svg("TRL PPO measurement")
+    s.text(M, 150, "200-step TRL PPO comparison", 45, weight="700")
+    s.text(M, 205, "same trainer path, less repeated preparation", 31, "#4b5563")
+    b, r, sv = TRL["baseline"], TRL["relpt"], TRL["savings"]
+    max_ms = max(float(b["total_ms"]), float(r["total_ms"])) / 1000.0
+    bar(s, M, 310, "total time", float(b["total_ms"]) / 1000.0, float(r["total_ms"]) / 1000.0, "s", max_ms)
+    bar(s, M, 470, "prep time", float(b["prep_ms"]) / 1000.0, float(r["prep_ms"]) / 1000.0, "s", max_ms)
+    bar(s, M, 630, "generate time", float(b["generate_ms"]) / 1000.0, float(r["generate_ms"]) / 1000.0, "s", max_ms)
+    bar(s, M, 830, "generated rows", float(b["generated_rows"]), float(r["generated_rows"]), "", float(b["generated_rows"]))
+    bar(s, M, 990, "reward rows", float(b["reward_rows"]), float(r["reward_rows"]), "", float(b["reward_rows"]))
+    s.rect(M, 1225, W - 2 * M, 195, "#f8fbff", "#c8d7ea")
+    s.text(M + 34, 1285, "Observed savings", 34, weight="700")
+    s.text(M + 34, 1340, f"total {pct(sv['total_ms_saved_pct'])} | prep {pct(sv['prep_ms_saved_pct'])} | generated rows {pct(sv['generated_rows_saved_pct'])}", 29)
+    s.text(M + 34, 1388, f"model sshleifer/tiny-gpt2 | dataset {TRL['config']['dataset_source']} | steps {TRL['config']['steps']}", 25, "#5e6978")
     s.footer(6)
     p = PAGES / "page_06.svg"
     s.save(p)
     return p
 
 
-def page7() -> Path:
-    s = Svg("Full RelPT simulated result")
-    s.text(M, 155, "完整 RelPT 表结构的 200-step 模拟结果", 44, weight="700")
-    n = LOCAL["naive"]  # type: ignore[index]
-    r = LOCAL["relpt"]  # type: ignore[index]
-    savings = LOCAL["savings"]  # type: ignore[index]
-    max_rows = max(float(n["rollout_rows"]), float(n["reward_rows"]), float(n["logprob_rows"]))
-    y = 280
-    bar(s, M, y, "rollout rows", float(n["rollout_rows"]), float(r["rollout_rows"]), "", max_rows)
-    bar(s, M, y + 150, "reward rows", float(n["reward_rows"]), float(r["reward_rows"]), "", max_rows)
-    bar(s, M, y + 300, "logprob rows", float(n["logprob_rows"]), float(r["logprob_rows"]), "", max_rows)
-    bar(s, M, y + 450, "train rows", float(n["train_rows"]), float(r["train_rows"]), "", max_rows)
-    s.rect(M, 1015, W - 2 * M, 410, "#fffdfa", "#dfc89f")
-    s.text(M + 34, 1075, "这张图的含义", 34, weight="700")
+def page_07() -> Path:
+    s = Svg("Full SQLite prototype result")
+    s.text(M, 155, "Full RelPT prototype: large reward-cache reuse", 44, weight="700")
+    n, r, sv = LOCAL["naive"], LOCAL["relpt"], LOCAL["savings"]
+    max_rows = float(n["reward_rows"])
+    bar(s, M, 310, "rollout rows", float(n["rollout_rows"]), float(r["rollout_rows"]), "", max_rows)
+    bar(s, M, 470, "reward executor rows", float(n["reward_rows"]), float(r["reward_rows"]), "", max_rows)
+    bar(s, M, 630, "logprob rows", float(n["logprob_rows"]), float(r["logprob_rows"]), "", max_rows)
+    bar(s, M, 790, "train rows", float(n["train_rows"]), float(r["train_rows"]), "", max_rows)
+    s.rect(M, 1060, W - 2 * M, 330, "#ffffff", "#d4dae3")
+    s.text(M + 34, 1120, "Mechanism", 34, weight="700")
     s.multiline(
         M + 34,
-        1135,
-        f"在完整 SQLite RelPT 原型里，rollout_rows 省 {float(savings['rollout_rows_saved_pct']):.1f}%，logprob_rows 省 {float(savings['logprob_rows_saved_pct']):.1f}%，reward_rows 省 {float(savings['reward_rows_saved_pct']):.1f}%。train_rows 省 0.0%，这是故意的：RelPT 不改 PPO 更新本身，只优化 PPO 前后的数据准备和复用。",
+        1180,
+        f"At 200 steps, RelPT saves {pct(sv['rollout_rows_saved_pct'])} of rollout rows, "
+        f"{pct(sv['reward_rows_saved_pct'])} of reward executor rows, and "
+        f"{pct(sv['logprob_rows_saved_pct'])} of logprob rows. Train rows stay unchanged "
+        "because PPO itself is intentionally the same black-box update.",
         30,
-        48,
+        56,
         43,
     )
-    s.multiline(M + 34, 1320, "reward_rows 省得最多，是因为 reward_cache 可以跨 policy version 复用 deterministic exact-answer reward。", 30, 48, 43)
     s.footer(7)
     p = PAGES / "page_07.svg"
     s.save(p)
     return p
 
 
-def page8() -> Path:
-    s = Svg("Conclusion")
-    s.text(M, 155, "从开始到结束：应该怎样理解 RelPT", 47, weight="700")
-    conclusions = [
-        ("PPO on what model?", "最新真实 TRL 对照使用 sshleifer/tiny-gpt2，在本地 GSM8K Arrow cache 上跑 200 steps。"),
-        ("加 RelPT 前", "每次 batch preparation 都重新 generate/reward/logprob；retry 或重复准备会浪费昂贵 executor 调用。"),
-        ("加 RelPT 后", "先查关系表/cache。已有 trajectory/reward/logprob/batch 直接 materialize；缺什么补什么。"),
-        ("SQL optimizer", "SQLite 是底层 SQL engine。RelPT 的 delta planner 负责生成缺失 worklist，SQLite join/constraint 负责复用和去重。"),
-        ("为什么这么做", "真实 post-training 的成本通常不在 SQL，而在 LLM generation、reward model 和 logprob engine。把中间产物表化后，就能避免重复调用这些黑盒 executor。"),
-        ("结果怎么读", "最新 TRL 200-step 总时间省 40.7%，generation/reward rows 各省 50%。质量 delta 为 0，说明 PPO 更新路径没变；这次主要是系统效率证据。"),
+def page_08() -> Path:
+    s = Svg("Interpretation")
+    s.text(M, 155, "How to read the evidence", 47, weight="700")
+    cards = [
+        ("Claim supported", "RelPT reduces duplicated PPO preparation work by materializing and reusing artifacts."),
+        ("Claim not made", "The tiny model did not learn GSM8K math in this run; quality deltas are zero in the TRL job."),
+        ("Why it matters", "Real post-training pipelines pay heavily for rollout, reward, and logprob executors."),
+        ("Prime_TTT link", "The same relational planning idea fits the broader Prime_TTT view: optimize artifacts before the gradient sink."),
     ]
-    y = 260
-    for title, body in conclusions:
-        s.rect(M, y, W - 2 * M, 145, "#ffffff", "#d6dce5")
-        s.text(M + 34, y + 50, title, 30, weight="700")
-        s.multiline(M + 285, y + 44, body, 27, 38, 38, "#394150")
-        y += 175
-    s.rect(M, 1390, W - 2 * M, 130, "#eef7f4", "#a7d1c1")
-    s.multiline(M + 34, 1445, "最短结论：RelPT 是 post-training pipeline 的关系型控制层。它不声称 PPO loss 更好，而是让同一个 PPO trainer 少重复准备数据。", 31, 48, 44)
+    y = 270
+    for title, body in cards:
+        s.rect(M, y, W - 2 * M, 210, "#ffffff", "#d4dae3")
+        s.text(M + 34, y + 62, title, 32, weight="700")
+        s.multiline(M + 34, y + 118, body, 29, 58, 42, "#394150")
+        y += 250
+    s.rect(M, 1320, W - 2 * M, 120, "#f6fff8", "#92c9a2")
+    s.text(M + 34, 1375, "Shortest conclusion: RelPT is a relational reuse layer for post-training systems.", 30, weight="700")
     s.footer(8)
     p = PAGES / "page_08.svg"
     s.save(p)
     return p
 
 
-def write_figure_files() -> None:
-    # Standalone SVGs for GitHub markdown preview.
-    for name, page_fn in [
-        ("relpt_pipeline.svg", page3),
-        ("trl_ppo_result.svg", page6),
-        ("simulated_relpt_result.svg", page7),
-    ]:
-        tmp = page_fn()
-        (FIGURES / name).write_text(tmp.read_text(encoding="utf-8"), encoding="utf-8")
-
-
 def write_markdown() -> None:
-    cfg = TRL["config"]  # type: ignore[index]
-    b = TRL["baseline"]  # type: ignore[index]
-    r = TRL["relpt"]  # type: ignore[index]
-    s = TRL["savings"]  # type: ignore[index]
-    md = f"""# RelPT 从零解释报告
+    b, r, sv = TRL["baseline"], TRL["relpt"], TRL["savings"]
+    local_sv = LOCAL["savings"]
+    text = f"""# Prime_TTT RelPT Detailed Report
 
-这份报告解释本仓库里的 RelPT：它是什么、用哪些 table 和 SQL join、optimizer 做什么、为什么这样做，以及最新 PPO 对照结果怎么读。
+This report explains the RelPT component in Prime_TTT: what it is, how it fits
+around PPO, which relational tables and SQL joins it uses, what the optimizer
+controls, and how to read the latest PPO comparison.
 
-## 一句话
+## One-sentence summary
 
-RelPT 不是新的 PPO loss。它是 post-training 前处理阶段的关系型控制层：把 prompt、trajectory、reward、logprob、advantage、batch 等中间产物表化，然后只补缺失 rows，避免重复调用 rollout/reward/logprob executor。
+RelPT is not a new PPO loss. It is a relational control layer for
+post-training preparation: prompts, trajectories, rewards, logprobs,
+advantages, batches, policies, updates, and metrics are materialized as
+append-only tables, so repeated PPO preparation can reuse existing rows and
+only call expensive rollout, reward, or logprob executors for missing work.
 
-## 图 1：RelPT 控制层
+## Figure 1: RelPT control layer
 
 ![RelPT pipeline](figures/relpt_pipeline.svg)
 
-## 最新真实 TRL PPO 对照
+## Detailed illustration
 
-- model: `{cfg['model_name']}`
-- dataset: `{cfg['dataset_source']}`
-- framework: `{cfg['framework']}`
-- steps: `{cfg['steps']}`
-- batch size: `{cfg['batch_size']}`
-- output: `{cfg['output']}`
+In a normal PPO preparation loop, the system starts from a prompt batch, calls a
+policy model to generate responses, scores each response with a reward function
+or reward model, computes old-policy logprobs, builds advantages, and finally
+hands a tensor batch to PPOTrainer. If the same policy step is retried, if a
+run fails after generation but before training, if `K` rollouts per prompt are
+increased, or if only rewards/logprobs need to be recomputed, a naive pipeline
+often repeats work that has already been done.
+
+RelPT inserts a relational layer before the trainer. The trainer remains a
+black box; rollout, reward, and logprob systems also remain black-box
+executors. RelPT only controls the artifacts that flow between them. Each
+artifact is written into an append-only SQLite table with lineage keys such as
+`prompt_id`, `policy_id`, `trajectory_id`, `reward_model_id`, and `batch_id`.
+Before preparing a PPO batch, RelPT queries those tables to decide which rows
+already exist and which rows are still missing.
+
+The key idea is delta execution:
+
+1. `prompt LEFT JOIN trajectory` identifies prompts that still need rollout rows for the current policy and requested number of responses.
+2. `trajectory LEFT JOIN reward` identifies generated responses that still need scoring.
+3. `reward_cache` reuses deterministic reward results across policy versions when the same prompt and response hash appear again.
+4. `trajectory LEFT JOIN logprob` identifies responses that still need old policy logprob computation.
+5. Completed trajectory, reward, logprob, and advantage rows are joined into a materialized PPO batch.
+6. PPOTrainer consumes the same batch shape as the baseline path, so RelPT changes preparation and reuse, not the training loss.
+
+## Tables and lineage
+
+| table | role |
+| --- | --- |
+| `prompt` | Input prompt text, dataset metadata, and labels where available. |
+| `policy` | Policy versions before and after PPO updates. |
+| `trajectory` | Generated responses keyed by prompt and policy. |
+| `reward` | Reward rows for specific trajectories and reward models. |
+| `reward_cache` | Deterministic reward reuse keyed by reward model, prompt, and response hash. |
+| `logprob` | Old-policy logprob rows needed by PPO. |
+| `advantage` | Return and advantage rows used for training. |
+| `batch` | Materialized PPO batch membership. |
+| `update_record` | Lineage from input policy, batch, trainer backend, and output policy. |
+| `metric` | Runtime, row-count, reward, and system metrics. |
+
+## Latest TRL PPO comparison
+
+- model: `{TRL['config']['model_name']}`
+- dataset: `{TRL['config']['dataset_source']}`
+- framework: `{TRL['config']['framework']}`
+- steps: `{TRL['config']['steps']}`
+- batch size: `{TRL['config']['batch_size']}`
+- output: `{TRL['config']['output']}`
 
 | metric | baseline | relpt | saved |
 | --- | ---: | ---: | ---: |
-| total_ms | {float(b['total_ms']):.1f} | {float(r['total_ms']):.1f} | {float(s['total_ms_saved_pct']):.1f}% |
-| prep_ms | {float(b['prep_ms']):.1f} | {float(r['prep_ms']):.1f} | {float(s['prep_ms_saved_pct']):.1f}% |
-| generate_ms | {float(b['generate_ms']):.1f} | {float(r['generate_ms']):.1f} | {float(s['generate_ms_saved_pct']):.1f}% |
-| reward_ms | {float(b['reward_ms']):.1f} | {float(r['reward_ms']):.1f} | {float(s['reward_ms_saved_pct']):.1f}% |
-| generated_rows | {float(b['generated_rows']):.0f} | {float(r['generated_rows']):.0f} | {float(s['generated_rows_saved_pct']):.1f}% |
-| reward_rows | {float(b['reward_rows']):.0f} | {float(r['reward_rows']):.0f} | {float(s['reward_rows_saved_pct']):.1f}% |
+| total_ms | {float(b['total_ms']):.1f} | {float(r['total_ms']):.1f} | {pct(sv['total_ms_saved_pct'])} |
+| prep_ms | {float(b['prep_ms']):.1f} | {float(r['prep_ms']):.1f} | {pct(sv['prep_ms_saved_pct'])} |
+| generate_ms | {float(b['generate_ms']):.1f} | {float(r['generate_ms']):.1f} | {pct(sv['generate_ms_saved_pct'])} |
+| reward_ms | {float(b['reward_ms']):.1f} | {float(r['reward_ms']):.1f} | {pct(sv['reward_ms_saved_pct'])} |
+| generated_rows | {int(float(b['generated_rows']))} | {int(float(r['generated_rows']))} | {pct(sv['generated_rows_saved_pct'])} |
+| reward_rows | {int(float(b['reward_rows']))} | {int(float(r['reward_rows']))} | {pct(sv['reward_rows_saved_pct'])} |
 
 ![TRL PPO result](figures/trl_ppo_result.svg)
 
-## 完整 SQLite RelPT 原型结果
+## Complete SQLite RelPT prototype result
+
+The full SQLite prototype saved {pct(local_sv['rollout_rows_saved_pct'])} of
+rollout rows, {pct(local_sv['reward_rows_saved_pct'])} of reward executor rows,
+and {pct(local_sv['logprob_rows_saved_pct'])} of logprob rows at 200 steps.
+Training rows were unchanged because RelPT intentionally leaves PPO itself as
+the same black-box update.
 
 ![Simulated RelPT result](figures/simulated_relpt_result.svg)
 
-## 怎么读结果
+## How to read the result
 
-这次结果说明 RelPT 可以减少 PPO batch preparation 的重复工作。它没有说明 tiny-gpt2 在 GSM8K 上学会了数学，因为 final_eval_reward_delta 和 mean_train_reward_delta 都是 0.0。这个实验的重点是系统效率：同一个 PPOTrainer、同一个模型、同一个数据集，RelPT 减少了 generate/reward rows 和 preparation time。
+The result supports a systems claim: RelPT can reduce duplicated PPO batch
+preparation work while keeping the PPO trainer path unchanged. It does not
+show that `sshleifer/tiny-gpt2` learned GSM8K math, because
+`final_eval_reward_delta` and `mean_train_reward_delta` are both `0.0` in this
+run. The useful signal is executor efficiency: with the same PPOTrainer, the
+same model, and the same dataset, RelPT reduces generated rows, reward rows,
+and preparation time.
 
-PDF 版本见 `docs/relpt_report.pdf`。
+PDF and HTML copies are generated from `docs/generate_relpt_report.py`.
 """
-    (DOCS / "relpt_report.md").write_text(md, encoding="utf-8")
+    (DOCS / "relpt_report.md").write_text(text, encoding="utf-8")
 
 
 def write_html() -> None:
     md = (DOCS / "relpt_report.md").read_text(encoding="utf-8")
-    html_body = "<br>\n".join(esc(line) for line in md.splitlines())
-    html_body = html_body.replace("![RelPT pipeline](figures/relpt_pipeline.svg)", '<img src="figures/relpt_pipeline.svg">')
-    html_body = html_body.replace("![TRL PPO result](figures/trl_ppo_result.svg)", '<img src="figures/trl_ppo_result.svg">')
-    html_body = html_body.replace("![Simulated RelPT result](figures/simulated_relpt_result.svg)", '<img src="figures/simulated_relpt_result.svg">')
-    html_doc = f"""<!doctype html>
+    body: List[str] = []
+    para: List[str] = []
+    in_table = False
+    in_ul = False
+    in_ol = False
+
+    def flush_para() -> None:
+        if para:
+            body.append(f"<p>{inline(' '.join(para))}</p>")
+            para.clear()
+
+    def close_blocks() -> None:
+        nonlocal in_table, in_ul, in_ol
+        flush_para()
+        if in_ul:
+            body.append("</ul>")
+            in_ul = False
+        if in_ol:
+            body.append("</ol>")
+            in_ol = False
+        if in_table:
+            body.append("</tbody></table>")
+            in_table = False
+
+    for line in md.splitlines():
+        if line.startswith("# "):
+            close_blocks()
+            body.append(f"<h1>{esc(line[2:])}</h1>")
+        elif line.startswith("## "):
+            close_blocks()
+            body.append(f"<h2>{esc(line[3:])}</h2>")
+        elif line.startswith("!["):
+            close_blocks()
+            alt = line.split("](", 1)[0][2:]
+            src = line.split("](", 1)[1][:-1]
+            body.append(f'<p><img src="{esc(src)}" alt="{esc(alt)}"></p>')
+        elif line.startswith("- "):
+            flush_para()
+            if not in_ul:
+                body.append("<ul>")
+                in_ul = True
+            body.append(f"<li>{inline(line[2:])}</li>")
+        elif len(line) > 2 and line[0].isdigit() and line[1:3] == ". ":
+            flush_para()
+            if not in_ol:
+                body.append("<ol>")
+                in_ol = True
+            body.append(f"<li>{inline(line[3:])}</li>")
+        elif line.startswith("| "):
+            flush_para()
+            cells = [c.strip() for c in line.strip("|").split("|")]
+            if set(cells[0]) <= {"-", ":"}:
+                continue
+            if not in_table:
+                body.append("<table><thead><tr>" + "".join(f"<th>{inline(c)}</th>" for c in cells) + "</tr></thead><tbody>")
+                in_table = True
+            else:
+                body.append("<tr>" + "".join(f"<td>{inline(c)}</td>" for c in cells) + "</tr>")
+        elif not line.strip():
+            close_blocks()
+        else:
+            para.append(line)
+    close_blocks()
+    html_text = f"""<!doctype html>
 <meta charset="utf-8">
-<title>RelPT report</title>
+<title>Prime_TTT RelPT Detailed Report</title>
 <style>
-body {{ font-family: {FONT_FAMILY}; max-width: 980px; margin: 40px auto; line-height: 1.65; color: #1f2933; }}
+body {{ font-family: DejaVu Sans, Arial, sans-serif; max-width: 980px; margin: 40px auto; line-height: 1.65; color: #1f2933; }}
 img {{ max-width: 100%; border: 1px solid #d6dce5; }}
-code {{ background: #f3f6fa; padding: 2px 5px; }}
+code {{ background: #f3f6fa; padding: 2px 5px; border-radius: 4px; }}
+table {{ border-collapse: collapse; width: 100%; margin: 18px 0; }}
+th, td {{ border: 1px solid #d6dce5; padding: 8px 10px; text-align: left; vertical-align: top; }}
+th {{ background: #f3f6fa; }}
+td:nth-child(n+2), th:nth-child(n+2) {{ text-align: right; }}
+table:nth-of-type(1) td:nth-child(2), table:nth-of-type(1) th:nth-child(2) {{ text-align: left; }}
 </style>
-<body>{html_body}</body>
+<body>
+{chr(10).join(body)}
+</body>
 """
-    (DOCS / "relpt_report.html").write_text(html_doc, encoding="utf-8")
+    (DOCS / "relpt_report.html").write_text(html_text, encoding="utf-8")
+
+
+def inline(text: str) -> str:
+    parts = text.split("`")
+    out = []
+    for i, part in enumerate(parts):
+        if i % 2:
+            out.append(f"<code>{esc(part)}</code>")
+        else:
+            out.append(esc(part))
+    return "".join(out)
+
+
+def build_pdf(pages: Sequence[Path]) -> None:
+    exe = shutil.which("rsvg-convert")
+    if not exe:
+        raise SystemExit("rsvg-convert is required to build docs/relpt_report.pdf")
+    subprocess.run([exe, "-f", "pdf", "-o", str(DOCS / "relpt_report.pdf"), *map(str, pages)], check=True)
 
 
 def main() -> None:
     FIGURES.mkdir(parents=True, exist_ok=True)
     PAGES.mkdir(parents=True, exist_ok=True)
-    pages = [page1(), page2(), page3(), page4(), page5(), page6(), page7(), page8()]
-    write_figure_files()
-    # Regenerate pages after standalone figure writes, because page functions write report pages too.
-    pages = [page1(), page2(), page3(), page4(), page5(), page6(), page7(), page8()]
+    pages = [fn() for fn in [page_01, page_02, page_03, page_04, page_05, page_06, page_07, page_08]]
+    shutil.copyfile(pages[2], FIGURES / "relpt_pipeline.svg")
+    shutil.copyfile(pages[5], FIGURES / "trl_ppo_result.svg")
+    shutil.copyfile(pages[6], FIGURES / "simulated_relpt_result.svg")
     write_markdown()
     write_html()
-    out_pdf = DOCS / "relpt_report.pdf"
-    converter = shutil.which("rsvg-convert")
-    if not converter:
-        raise SystemExit("rsvg-convert not found; SVG and Markdown were generated, PDF was not.")
-    subprocess.run([converter, "-f", "pdf", "-o", str(out_pdf), *map(str, pages)], check=True)
-    print(out_pdf)
+    build_pdf(pages)
+    print("Generated docs/relpt_report.md, .html, .pdf, figures, and report_pages")
 
 
 if __name__ == "__main__":
